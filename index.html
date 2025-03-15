@@ -104,13 +104,13 @@
 
         #overlay {
             position: absolute;
-            top: 0;
+            top: -20px; /* Flytter overlayet 20px op i stedet for translateY */
             left: 0;
             width: 100vw;
             height: 100vh;
-            object-fit: cover; /* Ændret fra contain til cover for at fylde hele skærmen */
-            transform: translateY(-20px);
+            object-fit: contain; /* Viser hele billedet uden beskæring */
             z-index: 4;
+            pointer-events: none;
         }
     </style>
 </head>
