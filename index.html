@@ -23,37 +23,32 @@
             touch-action: none;
         }
 
+        #image-container {
+            position: relative; /* Sørg for, at de absolut positionerede elementer er korrekt placeret */
+            display: inline-block;
+        }
+
         .full-image {
             max-width: 100%;
             max-height: 100vh;
             object-fit: contain;
             display: block;
             margin: auto;
+            transform: scale(1.05); /* Skalerer billedet 5% større */
         }
 
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background-color: #01152e; /* Sætter baggrundsfarven til den ønskede hex-farve */
-            overflow: hidden; /* Forhindrer scrollbars i fuldskærm */
-        }
-
-        #click-area, #click-area-menu, #click-area-zoom, #click-area-kortinfo, #click-area-korekort {
+        /* Røde og grønne bokse */
+        #click-area, #click-area-menu, #click-area-zoom, #click-area-kortinfo, #click-area-kortinfo-menu, #click-area-menu-kortinfo-back, #click-area-korekort {
             position: absolute;
-            background: rgba(255, 0, 0, 0.4);
+            background: rgba(255, 0, 0, 0.4); /* For de røde bokse */
             cursor: pointer;
         }
 
         #click-area-kortinfo-menu, #click-area-menu-kortinfo-back {
-            position: absolute;
-            background: rgba(51, 255, 0, 0.4);
-            cursor: pointer;
+            background: rgba(51, 255, 0, 0.4); /* For de grønne bokse */
         }
 
-        /* Dynamisk placering baseret på viewport-enheder (vw/vh) */
+        /* De specifikke positioner for de røde og grønne bokse */
         #click-area {
             top: 8.30vh;
             right: 39.1vw;
@@ -160,6 +155,9 @@
     </style>
 </head>
 <body>
+    <div id="image-container">
+        <img id="image" src="side1.png" alt="Billede" class="full-image">
+    </div>
     <div id="click-area"></div>
     <div id="click-area-menu"></div>
     <div id="click-area-zoom"></div>
@@ -167,8 +165,7 @@
     <div id="click-area-kortinfo-menu"></div>
     <div id="click-area-menu-kortinfo-back"></div>
     <div id="click-area-korekort"></div>
-    <img id="image" src="side1.png" alt="Billede" class="full-image">
-    
+
     <script>
         const imageElement = document.getElementById("image");
         const clickArea = document.getElementById("click-area");
