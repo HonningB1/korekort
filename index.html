@@ -108,6 +108,17 @@
             object-fit: cover;
             z-index: 4;
         }
+
+        #site_wrapper{
+            position:relative;
+        }
+
+        #video-bg {
+            position:absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
     </style>
 </head>
 <body>
@@ -119,9 +130,11 @@
     <div id="click-area-scan"></div>
     <img id="image" src="side1.png" alt="Billede" class="full-image">
 
-    <div id="video-container">
-        <video id="video" autoplay></video>
-        <img id="overlay" src="scan.png" alt="Scan overlay">
+    <video id="video-bg">
+        <div id="video-container">
+            <video id="video" autoplay></video>
+            <img id="overlay" src="scan.png" alt="Scan overlay">
+        </div>
     </div>
 
     <script>
