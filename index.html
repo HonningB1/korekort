@@ -147,6 +147,9 @@
         const clickAreaScan = document.getElementById("click-area-scan");
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
+        const overlay = document.getElementById("overlay");
+
+        let streaming = false;
 
         clickArea.addEventListener("click", function() {
             imageElement.src = "menu.png";
@@ -177,7 +180,7 @@
         clickAreaKortinfo.addEventListener("click", function() {
             imageElement.src = "kortinfo.png";
             clickArea.style.display = "none";
-            clickAreaMenuBack.style.display = "block";
+            clickAreaMenuBack.style.display = "none";
             clickAreaZoom.style.display = "none";
         });
 
@@ -189,18 +192,29 @@
         });
 
         clickAreaScan.addEventListener("click", function() {
-            navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
-                function(stream) {
-                var video = document.querySelector('video');
-                video.src = window.URL.createObjectURL(stream);
-                video.onloadedmetadata = function(e) {
-                video.play();
-                };
-            },
-            function(err) {
-                console.log("The following error occured: " + err.name);
-            }
-            );
+            // Skjul billedet og vis video-containeren med kamera-feed
+            imageElement.style.display = "none";
+            videoContainer.style.display = "flex";
+
+            // Initialiser kameraadgang
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function(error) {
+                    console.error("Fejl ved adgang til kamera: ", error);
+                    alert("Kunne ikke få adgang til kameraet. Tjek tilladelser.");
+                });
+
+            // Juster videoens størrelse, når den er klar
+            video.addEventListener("canplay", function(ev) {
+                if (!streaming) {
+                    video.style.width = "100vw";
+                    video.style.height = "100vh";
+                    streaming = true;
+                }
+            }, false);
         });
 
         imageElement.addEventListener("load", function() {
@@ -211,6 +225,13 @@
                 clickAreaKørekort.style.display = "block";
                 clickAreaKortinfo.style.display = "block";
                 clickAreaScan.style.display = "block";
+                videoContainer.style.display = "none"; // Skjul video-container ved side1.png
+                imageElement.style.display = "block"; // Vis billedet igen
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop()); // Stop kameraet
+                    video.srcObject = null;
+                    streaming = false;
+                }
             }
         });
     </script>
