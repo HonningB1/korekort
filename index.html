@@ -198,8 +198,8 @@
             clickAreaScan.style.display = "none";
             clickArea.style.display = "none";
             clickAreaZoom.style.display = "none";
-            clickAreaKørekort.style.display = "none";
-            clickAreaKortinfo.style.display = "none";
+            clickAreaKørekort.style.display = "block";
+            clickAreaKortinfo.style.display = "block";
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
                 .then(function(mediaStream) {
@@ -226,6 +226,12 @@
                 clickAreaBack.style.display = "none";
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
+                stopCamera();
+            }
+        });
+        
+        imageElement.addEventListener("load", function() {
+            if (imageElement.src.includes("kortinfo.png")) {
                 stopCamera();
             }
         });
