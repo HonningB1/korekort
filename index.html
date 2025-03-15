@@ -137,11 +137,6 @@
     <div id="click-area-menu-back-kortinfo"></div>
     <div id="click-area-scan"></div>
     <img id="image" src="side1.png" alt="Billede" class="full-image">
-
-    <div id="camera-container">
-        <video id="video" autoplay playsinline></video>
-        <img id="overlay" src="scan.png" alt="Scan overlay">
-    </div>
     
     <script>
         const imageElement = document.getElementById("image");
@@ -217,6 +212,7 @@
         });
 
         clickAreaScan.addEventListener("click", function() {
+            imageElement.src = "scan.png";
             navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
                 function(stream) {
                 var video = document.querySelector('video');
