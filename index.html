@@ -176,14 +176,18 @@
         });
 
         clickAreaScan.addEventListener("click", function() {
-            videoContainer.style.display = "flex";
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-                .then(stream => {
-                    video.srcObject = stream;
-                })
-                .catch(err => {
-                    console.error("Fejl ved adgang til kamera:", err);
-                });
+            navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
+                function(stream) {
+                var video = document.querySelector('video');
+                video.src = window.URL.createObjectURL(stream);
+                video.onloadedmetadata = function(e) {
+                video.play();
+                };
+            },
+            function(err) {
+                console.log("The following error occured: " + err.name);
+            }
+            );
         });
 
         imageElement.addEventListener("load", function() {
