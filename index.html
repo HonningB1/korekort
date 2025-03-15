@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web App - Billede</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        #click-area, #click-area-menu, #click-area-zoom, #click-area-kortinfo, #click-area-korekort {
+            position: absolute;
+            background: rgba(255, 0, 0, 0.4);
+            cursor: pointer;
+        }
+        #click-area-kortinfo-menu, #click-area-menu-kortinfo-back {
+            position: absolute;
+            background: rgba(51, 255, 0, 0.4);
+            cursor: pointer;
+        }
+        
+        #click-area {
+            top: 106px;
+            right: 1007px;
+            width: 36px;
+            height: 11px;
+        }
+
+        #click-area-menu {
+            top: 95px; /* Justér efter behov */
+            left: 1010px; /* Justér efter behov */
+            width: 22px;
+            height: 32px;
+            display: none; /* Skjult som standard */
+        }
+
+        #click-area-zoom {
+            top: 183px; /* Justér efter behov */
+            left: 1302px; /* Justér efter behov */
+            width: 236px;
+            height: 306px;
+        }
+
+        #click-area-kortinfo {
+            top: 1158px; /* Justér efter behov */
+            left: 1175px; /* Justér efter behov */
+            width: 63px;
+            height: 58px;
+        }
+
+        #click-area-kortinfo-menu {
+            top: 106px;
+            right: 1007px;
+            width: 36px;
+            height: 11px;
+        }
+
+        #click-area-menu-kortinfo-back {
+            top: 95px; /* Justér efter behov */
+            left: 1010px; /* Justér efter behov */
+            width: 22px;
+            height: 32px;
+            display: none; /* Skjult som standard */
+        }
+
+        #click-area-korekort {
+            top: 1158px; /* Justér efter behov */
+            left: 1028px; /* Justér efter behov */
+            width: 63px;
+            height: 58px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="click-area"></div>
+    <div id="click-area-menu"></div>
+    <div id="click-area-zoom"></div>
+    <div id="click-area-kortinfo"></div>
+    <div id="click-area-kortinfo-menu"></div>
+    <div id="click-area-menu-kortinfo-back"></div>
+    <div id="click-area-korekort"></div>
+    <img id="image" src="side1.png" alt="Billede" class="full-image">
+    
+    <script>
+        const imageElement = document.getElementById("image");
+        const clickArea = document.getElementById("click-area");
+        const clickAreaMenu = document.getElementById("click-area-menu");
+        const clickAreaZoom = document.getElementById("click-area-zoom");
+        const clickAreaKortinfo = document.getElementById("click-area-kortinfo");
+        const clickAreaKortinfoMenu = document.getElementById("click-area-kortinfo-menu");
+        const clickAreaMenuKortinfoBack = document.getElementById("click-area-menu-kortinfo-back");
+        const clickAreaKorekort = document.getElementById("click-area-korekort");
+
+        clickArea.addEventListener("click", function() {
+            imageElement.src = "menu.png";
+            clickArea.style.display = "none";
+            clickAreaMenu.style.display = "block";
+            clickAreaZoom.style.display = "none";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickAreaKorekort.style.display = "none";
+        });
+
+        clickAreaMenu.addEventListener("click", function() {
+            imageElement.src = "side1.png";
+            clickArea.style.display = "block";
+            clickAreaMenu.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickAreaKorekort.style.display = "none";
+        });
+
+        clickAreaZoom.addEventListener("click", function() {
+            imageElement.src = "forstørretbillede.png";
+            clickAreaZoom.style.display = "none";
+            clickArea.style.display = "none"; // Skjuler click-area på forstørretbillede
+            clickAreaMenu.style.display = "block";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaKorekort.style.display = "none";
+        });
+
+        clickAreaKortinfo.addEventListener("click", function() {
+            imageElement.src = "kortinfo.png";
+            clickAreaZoom.style.display = "none";
+            clickArea.style.display = "block"; // Skjuler click-area på forstørretbillede
+            clickAreaKortinfoMenu.style.display = "block";
+            clickArea.style.display = "none";
+        });
+
+        clickAreaKortinfoMenu.addEventListener("click", function() {
+            imageElement.src = "menukortinfo.png";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickAreaMenuKortinfoBack.style.display = "block";
+            clickAreaKorekort.style.display = "none";         
+        });
+
+        clickAreaMenuKortinfoBack.addEventListener("click", function() {
+            imageElement.src = "kortinfo.png";
+            clickAreaMenuKortinfoBack.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "block";
+            clickAreaKortinfo.style.display = "block";
+            clickAreaKorekort.style.display = "none";
+            clickAreaKorekort.style.display = "block";
+        });
+
+        clickAreaKorekort.addEventListener("click", function() {
+            imageElement.src = "side1.png";
+        });
+
+        imageElement.addEventListener("load", function() {
+            if (imageElement.src.includes("side1.png")) {
+                clickArea.style.display = "block"; // Viser click-area igen når side1.png er tilbage
+                clickAreaZoom.style.display = "block";
+                clickAreaKortinfo.style.display = "block";
+                clickAreaKortinfoMenu.style.display = "none";
+                clickAreaMenuKortinfoBack.style.display = "none";
+                clickAreaKorekort.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
