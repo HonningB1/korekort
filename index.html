@@ -200,25 +200,18 @@
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
 
-            navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: "environment",
-                    width: { ideal: window.innerWidth },
-                    height: { ideal: window.innerHeight }
-                },
-                audio: false
-            })
-            .then(function(mediaStream) {
-                stream = mediaStream;
-                video.srcObject = stream;
-                video.play();
-            })
-            .catch(function(error) {
-                console.error("Fejl ved adgang til kamera: ", error);
-                alert("Kunne ikke få adgang til kameraet: " + error.message);
-                videoContainer.style.display = "none";
-                imageElement.style.display = "block";
-            });
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
+                .then(function(mediaStream) {
+                    stream = mediaStream;
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function(error) {
+                    console.error("Fejl ved adgang til kamera: ", error);
+                    alert("Kunne ikke få adgang til kameraet: " + error.message);
+                    videoContainer.style.display = "none";
+                    imageElement.style.display = "block";
+                });
         });
 
         imageElement.addEventListener("load", function() {
