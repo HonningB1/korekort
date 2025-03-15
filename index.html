@@ -25,33 +25,21 @@
             touch-action: none;
         }
 
-        /* Tilføj en div til at simulere statusbaren */
-        .status-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 20px; /* Juster størrelsen for at matche statusbarens højde */
-            background-color: #01152e; /* Farve for statusbaren */
-            z-index: 9999;
-        }
-
         /* Container til billede */
         #image-container {
             position: relative;
-            display: inline-block;
             width: 100%;
-            height: 100vh;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
         }
 
         .full-image {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Fyld hele skærmen og beskær om nødvendigt */
-            display: block;
-            margin: auto;
-            transform: scale(1.05); /* Skalerer billedet lidt større */
+            object-fit: contain; /* Beholder hele billedet uden beskæring */
         }
 
         /* Røde og grønne bokse */
@@ -68,14 +56,12 @@
         /* Responsivitet for mindre enheder */
         @media (max-width: 768px) {
             #image-container {
-                margin-top: -20vh;
+                margin-top: 0;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Status bar simuleret med en div -->
-    <div class="status-bar"></div>
     <div id="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
     </div>
