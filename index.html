@@ -4,17 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web App - Billede</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes"> <!-- Gør appen i stand til at køre i fuldskærm -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!-- Statuslinjens stil -->
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: fixed;
+            touch-action: none;
+        }
+
+        .full-image {
+            max-width: 100%;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
+            background-color: #01152e; /* Sætter baggrundsfarven til den ønskede hex-farve */
+            overflow: hidden; /* Forhindrer scrollbars i fuldskærm */
         }
 
         #click-area, #click-area-menu, #click-area-zoom, #click-area-kortinfo, #click-area-korekort {
@@ -47,7 +69,7 @@
 
         #click-area-zoom {
             top: 13.94vh;
-            left: 50.3vw;
+            left: 50.2vw;
             width: 10.29vw;
             height: 25.33vh;
         }
@@ -85,52 +107,52 @@
         /* Responsivitet for mindre enheder */
         @media (max-width: 768px) {
             #click-area {
-                top: 12vh;
-                right: 45vw;
+                top: 8vh;
+                right: 6vw;
                 width: 5vw;
                 height: 2vh;
             }
 
             #click-area-menu {
-                top: 10vh;
-                left: 45vw;
+                top: 8vh;
+                left: 4vw;
                 width: 4vw;
-                height: 5vh;
+                height: 3vh;
             }
 
             #click-area-zoom {
-                top: 20vh;
-                left: 60vw;
-                width: 15vw;
-                height: 30vh;
+                top: 14vh;
+                left: 53vw;
+                width: 40vw;
+                height: 25vh;
             }
 
             #click-area-kortinfo {
-                top: 80vh;
-                left: 60vw;
-                width: 10vw;
-                height: 8vh;
+                top: 90vh;
+                left: 32vw;
+                width: 12vw;
+                height: 6vh;
             }
 
             #click-area-kortinfo-menu {
-                top: 12vh;
-                right: 45vw;
+                top: 8vh;
+                right: 4vw;
                 width: 5vw;
                 height: 2vh;
             }
 
             #click-area-menu-kortinfo-back {
-                top: 10vh;
-                left: 45vw;
-                width: 5vw;
-                height: 5vh;
+                top: 8vh;
+                left: 4vw;
+                width: 4vw;
+                height: 3vh;
             }
 
             #click-area-korekort {
-                top: 80vh;
-                left: 50vw;
-                width: 10vw;
-                height: 8vh;
+                top: 90vh;
+                left: 6.5vw;
+                width: 12vw;
+                height: 6vh;
             }
         }
     </style>
