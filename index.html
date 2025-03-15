@@ -104,11 +104,12 @@
 
         #overlay {
             position: absolute;
-            top: -20px; /* Flytter overlayet 20px op i stedet for translateY */
+            top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
-            object-fit: contain; /* Viser hele billedet uden beskæring */
+            height: calc(100vh + 20px); /* Tilføjer 20px ekstra højde */
+            object-fit: cover;
+            transform: translateY(-20px); /* Beholder din oprindelige flytning */
             z-index: 4;
             pointer-events: none;
         }
