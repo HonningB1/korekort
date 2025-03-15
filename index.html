@@ -24,7 +24,7 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            transform: translateY(-20px); /* Flytter billedet 20px op */
+            transform: translateY(-20px);
             position: absolute;
             top: 0;
             left: 0;
@@ -35,8 +35,8 @@
             position: absolute;
             background: rgba(255, 0, 0, 0.4);
             cursor: pointer;
-            display: block; /* Sikrer, at de altid er synlige */
-            z-index: 2; /* Sørger for at de er foran billedet */
+            display: block;
+            z-index: 2;
         }
         
         #click-area {
@@ -74,22 +74,6 @@
             height: 8vh;
         }
 
-        #click-area-kortinfo-menu {
-            top: 2vh;
-            right: 3vw;
-            width: 7vw;
-            height: 3vh;
-            display: none;
-        }
-
-        #click-area-menu-back-kortinfo {
-            top: 0.7vh;
-            left: 3.5vw;
-            width: 6vw;
-            height: 4vh;
-            display: none;
-        }
-
         #click-area-scan {
             top: 91vh;
             left: 55vw;
@@ -98,32 +82,31 @@
         }
 
         /* Video-container */
-        #camera-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        #video-container {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 1; /* Base layer */
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        #video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
         }
 
         #overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             object-fit: cover;
-            z-index: 2; /* On top of the video */
-            pointer-events: none; /* Prevent interaction with overlay */
+            z-index: 4;
         }
     </style>
 </head>
@@ -133,16 +116,14 @@
     <div id="click-area-zoom"></div>
     <div id="click-area-kortinfo"></div>
     <div id="click-area-kørekort"></div>
-    <div id="click-area-kortinfo-menu"></div>
-    <div id="click-area-menu-back-kortinfo"></div>
     <div id="click-area-scan"></div>
     <img id="image" src="side1.png" alt="Billede" class="full-image">
 
-    <div id="camera-container">
+    <div id="video-container">
         <video id="video" autoplay></video>
-        <img id="overlay" src="" alt="Overlay">
-      </div>
-    
+        <img id="overlay" src="scan.png" alt="Scan overlay">
+    </div>
+
     <script>
         const imageElement = document.getElementById("image");
         const clickArea = document.getElementById("click-area");
@@ -150,9 +131,6 @@
         const clickAreaZoom = document.getElementById("click-area-zoom");
         const clickAreaKortinfo = document.getElementById("click-area-kortinfo");
         const clickAreaKørekort = document.getElementById("click-area-kørekort");
-        const clickAreaKortinfoMenu = document.getElementById("click-area-kortinfo-menu");
-        const clickAreaMenuBackKortinfo = document.getElementById("click-area-menu-back-kortinfo");
-
         const clickAreaScan = document.getElementById("click-area-scan");
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
@@ -176,7 +154,7 @@
         clickAreaZoom.addEventListener("click", function() {
             imageElement.src = "forstørretbillede.png";
             clickAreaZoom.style.display = "none";
-            clickArea.style.display = "none"; // Skjuler click-area på forstørretbillede
+            clickArea.style.display = "none";
             clickAreaMenuBack.style.display = "block";
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
@@ -188,7 +166,6 @@
             clickArea.style.display = "none";
             clickAreaMenuBack.style.display = "block";
             clickAreaZoom.style.display = "none";
-            clickAreaKortinfoMenu.style.display = "block";
         });
 
         clickAreaKørekort.addEventListener("click", function() {
@@ -198,66 +175,25 @@
             clickAreaZoom.style.display = "none";
         });
 
-        clickAreaKortinfoMenu.addEventListener("click", function() {
-            imageElement.src = "menukortinfo.png";
-            clickAreaKortinfo.style.display = "none";
-            clickAreaKortinfoMenu.style.display = "none";
-            clickAreaMenuBackKortinfo.style.display = "block";
-            clickAreaKørekort.style.display = "none";
-            clickAreaScan.style.display = "none";
-        });
-        
-        clickAreaMenuBackKortinfo.addEventListener("click", function() {
-            imageElement.src = "kortinfo.png";
-            clickAreaKørekort.style.display = "block";
-            clickAreaKortinfo.style.display = "block";
-            clickAreaKortinfoMenu.style.display = "block";
-            clickAreaMenuBackKortinfo.style.display = "none";
-            clickAreaScan.style.display = "block";
-        });
-
         clickAreaScan.addEventListener("click", function() {
-        // Skjul det oprindelige billede
-        imageElement.style.display = "none";
-
-        // Vis kamera-containeren
-        document.getElementById("camera-container").style.display = "block";
-
-        // Sæt overlay-billedet til scan.png
-        document.getElementById("overlay").src = "scan.png";
-
-        // Start kamera-feedet
-        navigator.mediaDevices
-            .getUserMedia({ video: { width: 1280, height: 720 } })
-            .then(function(stream) {
-            var video = document.getElementById("video");
-            video.srcObject = stream; // Brug srcObject i stedet for createObjectURL
-            video.onloadedmetadata = function(e) {
-                video.play();
-            };
-            })
-            .catch(function(err) {
-            console.log("Der opstod en fejl: " + err.name);
-            });
+            videoContainer.style.display = "flex";
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    console.error("Fejl ved adgang til kamera:", err);
+                });
         });
 
         imageElement.addEventListener("load", function() {
             if (imageElement.src.includes("side1.png")) {
-                clickArea.style.display = "block"; // Viser click-area igen når side1.png er tilbage
+                clickArea.style.display = "block";
                 clickAreaZoom.style.display = "block";
                 clickAreaMenuBack.style.display = "none";
-                clickAreaKortinfoMenu.style.display = "none";
                 clickAreaKørekort.style.display = "block";
                 clickAreaKortinfo.style.display = "block";
                 clickAreaScan.style.display = "block";
-            }
-        });
-
-        imageElement.addEventListener("load", function() {
-            if (imageElement.src.includes("kortinfo.png")) {
-                clickArea.style.display = "none"; // Viser click-area igen når side1.png er tilbage
-                clickAreaZoom.style.display = "none";
-                clickAreaMenuBack.style.display = "none";
             }
         });
     </script>
