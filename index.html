@@ -31,7 +31,7 @@
             z-index: 1;
         }
 
-        #click-area, #click-area-menu, #click-area-zoom {
+        #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-kortinfo-menu, #click-area-menu-back-kortinfo, #click-area-scan {
             position: absolute;
             background: rgba(255, 0, 0, 0.4);
             cursor: pointer;
@@ -40,61 +40,224 @@
         }
         
         #click-area {
-            top: 8.5vh;
-            right: 20vw;
-            width: 4vw;
-            height: 1.5vh;
+            top: 2vh;
+            right: 3vw;
+            width: 7vw;
+            height: 3vh;
         }
 
-        #click-area-menu {
-            top: 15vh;
-            left: 25vw;
-            width: 3vw;
+        #click-area-menu-back {
+            top: 0.7vh;
+            left: 3.5vw;
+            width: 6vw;
             height: 4vh;
         }
 
         #click-area-zoom {
-            top: 25vh;
-            left: 15vw;
-            width: 30vw;
-            height: 40vh;
+            top: 8vh;
+            left: 51vw;
+            width: 46vw;
+            height: 28vh;
+        }
+
+        #click-area-kortinfo {
+            top: 91vh;
+            left: 30vw;
+            width: 15vw;
+            height: 8vh;
+        }
+
+        #click-area-kørekort {
+            top: 91vh;
+            left: 5vw;
+            width: 15vw;
+            height: 8vh;
+        }
+
+        #click-area-kortinfo-menu {
+            top: 2vh;
+            right: 3vw;
+            width: 7vw;
+            height: 3vh;
+            display: none;
+        }
+
+        #click-area-menu-back-kortinfo {
+            top: 0.7vh;
+            left: 3.5vw;
+            width: 6vw;
+            height: 4vh;
+            display: none;
+        }
+
+        #click-area-scan {
+            top: 91vh;
+            left: 55vw;
+            width: 15vw;
+            height: 8vh;
+        }
+
+        #video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+            flex-direction: column;
+        }
+
+        #video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+
+        #close-camera {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            background: red;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
     <div id="click-area"></div>
-    <div id="click-area-menu"></div>
+    <div id="click-area-menu-back"></div>
     <div id="click-area-zoom"></div>
+    <div id="click-area-kortinfo"></div>
+    <div id="click-area-kørekort"></div>
+    <div id="click-area-kortinfo-menu"></div>
+    <div id="click-area-menu-back-kortinfo"></div>
+    <div id="click-area-scan"></div>
     <img id="image" src="side1.png" alt="Billede" class="full-image">
+
+    <div id="video-container">
+        <video id="video" autoplay playsinline></video>
+        <button id="close-camera">Luk</button>
+    </div>
     
     <script>
         const imageElement = document.getElementById("image");
         const clickArea = document.getElementById("click-area");
-        const clickAreaMenu = document.getElementById("click-area-menu");
+        const clickAreaMenuBack = document.getElementById("click-area-menu-back");
         const clickAreaZoom = document.getElementById("click-area-zoom");
+        const clickAreaKortinfo = document.getElementById("click-area-kortinfo");
+        const clickAreaKørekort = document.getElementById("click-area-kørekort");
+        const clickAreaKortinfoMenu = document.getElementById("click-area-kortinfo-menu");
+        const clickAreaMenuBackKortinfo = document.getElementById("click-area-menu-back-kortinfo");
+
+        const clickAreaScan = document.getElementById("click-area-scan");
+        const videoContainer = document.getElementById("video-container");
+        const video = document.getElementById("video");
+        const closeCamera = document.getElementById("close-camera");
+        let stream = null;
 
         clickArea.addEventListener("click", function() {
             imageElement.src = "menu.png";
             clickArea.style.display = "none";
-            clickAreaMenu.style.display = "block";
+            clickAreaMenuBack.style.display = "block";
+            clickAreaZoom.style.display = "none";
+            clickAreaKørekort.style.display = "none";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaScan.style.display = "none";
         });
 
-        clickAreaMenu.addEventListener("click", function() {
+        clickAreaMenuBack.addEventListener("click", function() {
             imageElement.src = "side1.png";
             clickArea.style.display = "block";
-            clickAreaMenu.style.display = "none";
+            clickAreaMenuBack.style.display = "none";
         });
 
         clickAreaZoom.addEventListener("click", function() {
             imageElement.src = "forstørretbillede.png";
             clickAreaZoom.style.display = "none";
             clickArea.style.display = "none"; // Skjuler click-area på forstørretbillede
+            clickAreaMenuBack.style.display = "block";
+            clickAreaKørekort.style.display = "none";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaScan.style.display = "none";
+        });
+
+        clickAreaKortinfo.addEventListener("click", function() {
+            imageElement.src = "kortinfo.png";
+            clickArea.style.display = "none";
+            clickAreaMenuBack.style.display = "block";
+            clickAreaZoom.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "block";
+        });
+
+        clickAreaKørekort.addEventListener("click", function() {
+            imageElement.src = "side1.png";
+            clickArea.style.display = "none";
+            clickAreaMenuBack.style.display = "block";
+            clickAreaZoom.style.display = "none";
+        });
+
+        clickAreaKortinfoMenu.addEventListener("click", function() {
+            imageElement.src = "menukortinfo.png";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickAreaMenuBackKortinfo.style.display = "block";
+            clickAreaKørekort.style.display = "none";
+            clickAreaScan.style.display = "none";
+        });
+        
+        clickAreaMenuBackKortinfo.addEventListener("click", function() {
+            imageElement.src = "kortinfo.png";
+            clickAreaKørekort.style.display = "block";
+            clickAreaKortinfo.style.display = "block";
+            clickAreaKortinfoMenu.style.display = "block";
+            clickAreaMenuBackKortinfo.style.display = "none";
+            clickAreaScan.style.display = "block";
+        });
+
+        clickAreaScan.addEventListener("click", function() {
+            videoContainer.style.display = "flex";
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(mediaStream => {
+                    stream = mediaStream;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    console.error("Fejl ved adgang til kamera:", err);
+                });
+        });
+
+        closeCamera.addEventListener("click", function() {
+            videoContainer.style.display = "none";
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
         });
 
         imageElement.addEventListener("load", function() {
             if (imageElement.src.includes("side1.png")) {
                 clickArea.style.display = "block"; // Viser click-area igen når side1.png er tilbage
                 clickAreaZoom.style.display = "block";
+                clickAreaMenuBack.style.display = "none";
+                clickAreaKortinfoMenu.style.display = "none";
+                clickAreaKørekort.style.display = "block";
+                clickAreaKortinfo.style.display = "block";
+                clickAreaScan.style.display = "block";
+            }
+        });
+
+        imageElement.addEventListener("load", function() {
+            if (imageElement.src.includes("kortinfo.png")) {
+                clickArea.style.display = "none"; // Viser click-area igen når side1.png er tilbage
+                clickAreaZoom.style.display = "none";
+                clickAreaMenuBack.style.display = "none";
             }
         });
     </script>
