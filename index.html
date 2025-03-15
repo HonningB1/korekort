@@ -97,18 +97,18 @@
             height: 8vh;
         }
 
+        /* Video-container */
         #video-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
+            background: black;
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 3;
-            flex-direction: column;
         }
 
         #video {
@@ -117,17 +117,12 @@
             object-fit: cover;
         }
 
-        #close-camera {
+        #overlay {
             position: absolute;
-            top: 5%;
-            right: 5%;
-            background: red;
-            color: white;
-            padding: 10px 20px;
-            font-size: 18px;
-            border: none;
-            cursor: pointer;
-            z-index: 5;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 4;
         }
     </style>
 </head>
@@ -143,8 +138,8 @@
     <img id="image" src="side1.png" alt="Billede" class="full-image">
 
     <div id="video-container">
-        <video id="video" autoplay playsinline></video>
-        <button id="close-camera">Luk</button>
+        <video id="video" autoplay></video>
+        <img id="overlay" src="scan.png" alt="Scan overlay">
     </div>
     
     <script>
@@ -160,8 +155,6 @@
         const clickAreaScan = document.getElementById("click-area-scan");
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
-        const closeCamera = document.getElementById("close-camera");
-        let stream = null;
 
         clickArea.addEventListener("click", function() {
             imageElement.src = "menu.png";
@@ -224,21 +217,13 @@
 
         clickAreaScan.addEventListener("click", function() {
             videoContainer.style.display = "flex";
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-                .then(mediaStream => {
-                    stream = mediaStream;
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+                .then(stream => {
                     video.srcObject = stream;
                 })
                 .catch(err => {
                     console.error("Fejl ved adgang til kamera:", err);
                 });
-        });
-
-        closeCamera.addEventListener("click", function() {
-            videoContainer.style.display = "none";
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
         });
 
         imageElement.addEventListener("load", function() {
