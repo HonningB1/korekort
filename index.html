@@ -16,19 +16,27 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: black;
+            background-color: #01152e;
+            position: relative;
         }
 
         .full-image {
             width: 100vw;
             height: 100vh;
             object-fit: cover;
+            transform: translateY(-20px); /* Flytter billedet 20px op */
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
 
         #click-area, #click-area-menu, #click-area-zoom {
             position: absolute;
             background: rgba(255, 0, 0, 0.4);
             cursor: pointer;
+            display: block; /* Sikrer, at de altid er synlige */
+            z-index: 2; /* Sørger for at de er foran billedet */
         }
         
         #click-area {
@@ -43,7 +51,6 @@
             left: 25vw;
             width: 3vw;
             height: 4vh;
-            display: none;
         }
 
         #click-area-zoom {
