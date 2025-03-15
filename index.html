@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web App - Billede</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!-- For iOS -->
+    <meta name="theme-color" content="#01152e"> <!-- For Android og Chrome -->
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <style>
-        html, body {
+        /* Ændrer statusbarens farve til ønsket farve */
+        body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: black;
+            background-color: #01152e;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,11 +25,22 @@
             touch-action: none;
         }
 
-        /* Flytter billedet op med margin-top */
+        /* Tilføj en div til at simulere statusbaren */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px; /* Juster størrelsen for at matche statusbarens højde */
+            background-color: #01152e; /* Farve for statusbaren */
+            z-index: 9999;
+        }
+
+        /* Container til billede */
         #image-container {
             position: relative;
             display: inline-block;
-            margin-top: -5vh; /* Brug evt. -10vh eller -15vh afhængigt af ønsket resultat */
+            margin-top: -5vh; /* Juster for at flytte billedet op */
         }
 
         .full-image {
@@ -36,132 +49,31 @@
             object-fit: contain;
             display: block;
             margin: auto;
-            transform: scale(1.05); /* Skalerer billedet 5% større */
+            transform: scale(1.05); /* Skalerer billedet lidt større */
         }
 
         /* Røde og grønne bokse */
         #click-area, #click-area-menu, #click-area-zoom, #click-area-kortinfo, #click-area-kortinfo-menu, #click-area-menu-kortinfo-back, #click-area-korekort {
             position: absolute;
-            background: rgba(255, 0, 0, 0.4); /* For de røde bokse */
+            background: rgba(255, 0, 0, 0.4);
             cursor: pointer;
         }
 
         #click-area-kortinfo-menu, #click-area-menu-kortinfo-back {
-            background: rgba(51, 255, 0, 0.4); /* For de grønne bokse */
-        }
-
-        /* De specifikke positioner for de røde og grønne bokse */
-        #click-area {
-            top: 8.30vh;
-            right: 39.1vw;
-            width: 1.88vw;
-            height: 1.02vh;
-        }
-
-        #click-area-menu {
-            top: 8.80vh;
-            left: 52.60vw;
-            width: 1.15vw;
-            height: 2.96vh;
-            display: none;
-        }
-
-        #click-area-zoom {
-            top: 13.94vh;
-            left: 50.2vw;
-            width: 10.29vw;
-            height: 25.33vh;
-        }
-
-        #click-area-kortinfo {
-            top: 90.50vh;
-            left: 45.50vw;
-            width: 3.28vw;
-            height: 5.37vh;
-        }
-
-        #click-area-kortinfo-menu {
-            top: 9.81vh;
-            right: 52.53vw;
-            width: 1.88vw;
-            height: 1.02vh;
-        }
-
-        #click-area-menu-kortinfo-back {
-            top: 8.80vh;
-            left: 52.60vw;
-            width: 1.15vw;
-            height: 2.96vh;
-            display: none;
-        }
-
-        #click-area-korekort {
-            top: 90.50vh;
-            left: 39.70vw;
-            width: 3.28vw;
-            height: 5.37vh;
-            display: none;
+            background: rgba(51, 255, 0, 0.4);
         }
 
         /* Responsivitet for mindre enheder */
         @media (max-width: 768px) {
-            /* Juster margin-top på mobile enheder */
             #image-container {
-                margin-top: -5vh; /* Juster for mobile enheder */
-            }
-
-            #click-area {
-                top: 8vh;
-                right: 6vw;
-                width: 5vw;
-                height: 2vh;
-            }
-
-            #click-area-menu {
-                top: 8vh;
-                left: 4vw;
-                width: 4vw;
-                height: 3vh;
-            }
-
-            #click-area-zoom {
-                top: 14vh;
-                left: 53vw;
-                width: 40vw;
-                height: 25vh;
-            }
-
-            #click-area-kortinfo {
-                top: 90vh;
-                left: 32vw;
-                width: 12vw;
-                height: 6vh;
-            }
-
-            #click-area-kortinfo-menu {
-                top: 8vh;
-                right: 4vw;
-                width: 5vw;
-                height: 2vh;
-            }
-
-            #click-area-menu-kortinfo-back {
-                top: 8vh;
-                left: 4vw;
-                width: 4vw;
-                height: 3vh;
-            }
-
-            #click-area-korekort {
-                top: 90vh;
-                left: 6.5vw;
-                width: 12vw;
-                height: 6vh;
+                margin-top: -20vh;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Status bar simuleret med en div -->
+    <div class="status-bar"></div>
     <div id="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
     </div>
