@@ -9,67 +9,129 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+        }
+
         #click-area, #click-area-menu, #click-area-zoom, #click-area-kortinfo, #click-area-korekort {
             position: absolute;
             background: rgba(255, 0, 0, 0.4);
             cursor: pointer;
         }
+
         #click-area-kortinfo-menu, #click-area-menu-kortinfo-back {
             position: absolute;
             background: rgba(51, 255, 0, 0.4);
             cursor: pointer;
         }
-        
+
+        /* Dynamisk placering baseret på viewport-enheder (vw/vh) */
         #click-area {
-            top: 106px;
-            right: 1007px;
-            width: 36px;
-            height: 11px;
+            top: 8.30vh;
+            right: 39.1vw;
+            width: 1.88vw;
+            height: 1.02vh;
         }
 
         #click-area-menu {
-            top: 95px; /* Justér efter behov */
-            left: 1010px; /* Justér efter behov */
-            width: 22px;
-            height: 32px;
-            display: none; /* Skjult som standard */
+            top: 8.80vh;
+            left: 52.60vw;
+            width: 1.15vw;
+            height: 2.96vh;
+            display: none;
         }
 
         #click-area-zoom {
-            top: 183px; /* Justér efter behov */
-            left: 1302px; /* Justér efter behov */
-            width: 236px;
-            height: 306px;
+            top: 13.94vh;
+            left: 50.3vw;
+            width: 10.29vw;
+            height: 25.33vh;
         }
 
         #click-area-kortinfo {
-            top: 1158px; /* Justér efter behov */
-            left: 1175px; /* Justér efter behov */
-            width: 63px;
-            height: 58px;
+            top: 90.50vh;
+            left: 45.50vw;
+            width: 3.28vw;
+            height: 5.37vh;
         }
 
         #click-area-kortinfo-menu {
-            top: 106px;
-            right: 1007px;
-            width: 36px;
-            height: 11px;
+            top: 9.81vh;
+            right: 52.53vw;
+            width: 1.88vw;
+            height: 1.02vh;
         }
 
         #click-area-menu-kortinfo-back {
-            top: 95px; /* Justér efter behov */
-            left: 1010px; /* Justér efter behov */
-            width: 22px;
-            height: 32px;
-            display: none; /* Skjult som standard */
+            top: 8.80vh;
+            left: 52.60vw;
+            width: 1.15vw;
+            height: 2.96vh;
+            display: none;
         }
 
         #click-area-korekort {
-            top: 1158px; /* Justér efter behov */
-            left: 1028px; /* Justér efter behov */
-            width: 63px;
-            height: 58px;
+            top: 90.50vh;
+            left: 39.70vw;
+            width: 3.28vw;
+            height: 5.37vh;
             display: none;
+        }
+
+        /* Responsivitet for mindre enheder */
+        @media (max-width: 768px) {
+            #click-area {
+                top: 12vh;
+                right: 45vw;
+                width: 5vw;
+                height: 2vh;
+            }
+
+            #click-area-menu {
+                top: 10vh;
+                left: 45vw;
+                width: 4vw;
+                height: 5vh;
+            }
+
+            #click-area-zoom {
+                top: 20vh;
+                left: 60vw;
+                width: 15vw;
+                height: 30vh;
+            }
+
+            #click-area-kortinfo {
+                top: 80vh;
+                left: 60vw;
+                width: 10vw;
+                height: 8vh;
+            }
+
+            #click-area-kortinfo-menu {
+                top: 12vh;
+                right: 45vw;
+                width: 5vw;
+                height: 2vh;
+            }
+
+            #click-area-menu-kortinfo-back {
+                top: 10vh;
+                left: 45vw;
+                width: 5vw;
+                height: 5vh;
+            }
+
+            #click-area-korekort {
+                top: 80vh;
+                left: 50vw;
+                width: 10vw;
+                height: 8vh;
+            }
         }
     </style>
 </head>
@@ -114,7 +176,7 @@
         clickAreaZoom.addEventListener("click", function() {
             imageElement.src = "forstørretbillede.png";
             clickAreaZoom.style.display = "none";
-            clickArea.style.display = "none"; // Skjuler click-area på forstørretbillede
+            clickArea.style.display = "none";
             clickAreaMenu.style.display = "block";
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaKortinfo.style.display = "none";
@@ -124,7 +186,7 @@
         clickAreaKortinfo.addEventListener("click", function() {
             imageElement.src = "kortinfo.png";
             clickAreaZoom.style.display = "none";
-            clickArea.style.display = "block"; // Skjuler click-area på forstørretbillede
+            clickArea.style.display = "block";
             clickAreaKortinfoMenu.style.display = "block";
             clickArea.style.display = "none";
         });
@@ -134,7 +196,7 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaMenuKortinfoBack.style.display = "block";
-            clickAreaKorekort.style.display = "none";         
+            clickAreaKorekort.style.display = "none";
         });
 
         clickAreaMenuKortinfoBack.addEventListener("click", function() {
@@ -152,7 +214,7 @@
 
         imageElement.addEventListener("load", function() {
             if (imageElement.src.includes("side1.png")) {
-                clickArea.style.display = "block"; // Viser click-area igen når side1.png er tilbage
+                clickArea.style.display = "block"; 
                 clickAreaZoom.style.display = "block";
                 clickAreaKortinfo.style.display = "block";
                 clickAreaKortinfoMenu.style.display = "none";
