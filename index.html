@@ -137,6 +137,10 @@
     <div id="click-area-menu-back-kortinfo"></div>
     <div id="click-area-scan"></div>
     <img id="image" src="side1.png" alt="Billede" class="full-image">
+
+    <div id="camera-container">
+        <video id="video" autoplay></video>
+    </div>
     
     <script>
         const imageElement = document.getElementById("image");
@@ -213,18 +217,15 @@
 
         clickAreaScan.addEventListener("click", function() {
             imageElement.src = "scan.png";
-            navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
-                function(stream) {
-                var video = document.querySelector('video');
-                video.src = window.URL.createObjectURL(stream);
-                video.onloadedmetadata = function(e) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                const video = document.querySelector('video');
+                video.srcObject = stream;
                 video.play();
-                };
-            },
-            function(err) {
-                console.log("The following error occured: " + err.name);
-            }
-            );
+            })
+            .catch(function(err) {
+                console.log("The following error occurred: " + err.name);
+            });
         });
 
         imageElement.addEventListener("load", function() {
