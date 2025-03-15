@@ -183,6 +183,8 @@
             clickArea.style.display = "none";
             clickAreaMenuBack.style.display = "none";
             clickAreaZoom.style.display = "none";
+            videoContainer.style.display = "none";
+            imageElement.style.display = "none";
         });
 
         clickAreaKørekort.addEventListener("click", function() {
@@ -190,6 +192,8 @@
             clickArea.style.display = "none";
             clickAreaMenuBack.style.display = "block";
             clickAreaZoom.style.display = "none";
+            videoContainer.style.display = "none";
+            imageElement.style.display = "none";
         });
 
         clickAreaScan.addEventListener("click", function() {
@@ -222,8 +226,7 @@
                 clickAreaMenuBack.style.display = "none";
                 clickAreaKørekort.style.display = "block";
                 clickAreaKortinfo.style.display = "block";
-                clickAreaScan.style.display = "block";
-                clickAreaBack.style.display = "none";
+                clickAreaScan.style.display = "block";;
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
                 stopCamera();
@@ -232,6 +235,12 @@
 
         imageElement.addEventListener("load", function() {
             if (imageElement.src.includes("kortinfo.png")) {
+                stopCamera();
+            }
+        });
+
+        imageElement.addEventListener("load", function() {
+            if (imageElement.src.includes("side1.png")) {
                 stopCamera();
             }
         });
