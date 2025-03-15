@@ -141,7 +141,7 @@
     <div id="camera-container">
         <video id="video" autoplay playsinline></video>
         <img id="overlay" src="scan.png" alt="Scan overlay">
-    </div>    
+    </div>
     
     <script>
         const imageElement = document.getElementById("image");
@@ -217,13 +217,18 @@
         });
 
         clickAreaScan.addEventListener("click", function() {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-                .then(stream => {
-                    video.srcObject = stream;
-                })
-                .catch(error => {
-                    console.error("Camera access error:", error);
-                });
+            navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
+                function(stream) {
+                var video = document.querySelector('video');
+                video.src = window.URL.createObjectURL(stream);
+                video.onloadedmetadata = function(e) {
+                video.play();
+                };
+            },
+            function(err) {
+                console.log("The following error occured: " + err.name);
+            }
+            );
         });
 
         imageElement.addEventListener("load", function() {
