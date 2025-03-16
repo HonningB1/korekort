@@ -31,7 +31,7 @@
             z-index: 1;
         }
 
-        #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-scan, #click-area-back {
+        #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-scan, #click-area-back, #click-area-kortinfo-menu, #click-area-menu-back-kortinfo {
             position: absolute;
             background: rgba(255, 0, 0, 0.4);
             cursor: pointer;
@@ -65,6 +65,22 @@
             left: 30vw;
             width: 15vw;
             height: 8vh;
+        }
+
+        #click-area-kortinfo-menu {
+            top: 2vh;
+            right: 3vw;
+            width: 7vw;
+            height: 3vh;
+            display: none;
+        }
+
+        #click-area-menu-back-kortinfo {
+            top: 0.7vh;
+            left: 3.5vw;
+            width: 6vw;
+            height: 4vh;
+            display: none;
         }
 
         #click-area-kørekort {
@@ -121,6 +137,8 @@
     <div id="click-area-zoom"></div>
     <div id="click-area-kortinfo"></div>
     <div id="click-area-kørekort"></div>
+    <div id="click-area-kortinfo-menu"></div>
+    <div id="click-area-menu-back-kortinfo"></div>
     <div id="click-area-scan"></div>
     <img id="image" src="side1.png" alt="Billede" class="full-image">
 
@@ -136,6 +154,9 @@
         const clickAreaZoom = document.getElementById("click-area-zoom");
         const clickAreaKortinfo = document.getElementById("click-area-kortinfo");
         const clickAreaKørekort = document.getElementById("click-area-kørekort");
+        const clickAreaKortinfoMenu = document.getElementById("click-area-kortinfo-menu");
+        const clickAreaMenuBackKortinfo = document.getElementById("click-area-menu-back-kortinfo");
+
         const clickAreaScan = document.getElementById("click-area-scan");
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
@@ -194,6 +215,24 @@
             clickAreaZoom.style.display = "none";
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
+        });
+
+        clickAreaKortinfoMenu.addEventListener("click", function() {
+            imageElement.src = "menukortinfo.png";
+            clickAreaKortinfo.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickAreaMenuBackKortinfo.style.display = "block";
+            clickAreaKørekort.style.display = "none";
+            clickAreaScan.style.display = "none";
+        });
+        
+        clickAreaMenuBackKortinfo.addEventListener("click", function() {
+            imageElement.src = "kortinfo.png";
+            clickAreaKørekort.style.display = "block";
+            clickAreaKortinfo.style.display = "block";
+            clickAreaKortinfoMenu.style.display = "block";
+            clickAreaMenuBackKortinfo.style.display = "none";
+            clickAreaScan.style.display = "block";
         });
 
         clickAreaScan.addEventListener("click", function() {
