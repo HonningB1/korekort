@@ -197,6 +197,7 @@
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
+            clickAreaKortinfoMenu.style.display = "none";
         });
 
         clickAreaKortinfo.addEventListener("click", function() {
@@ -244,6 +245,7 @@
             clickAreaZoom.style.display = "none";
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
+            clickAreaKortinfoMenu.style.display = "none";
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
                 .then(function(mediaStream) {
@@ -266,6 +268,7 @@
                 clickAreaMenuBack.style.display = "none";
                 clickAreaKørekort.style.display = "block";
                 clickAreaKortinfo.style.display = "block";
+                clickAreaKortinfoMenu.style.display = "none";
                 clickAreaScan.style.display = "block";
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
