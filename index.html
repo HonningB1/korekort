@@ -197,7 +197,6 @@
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
-            clickAreaKortinfoMenu.style.display = "block";
         });
 
         clickAreaKortinfo.addEventListener("click", function() {
@@ -207,6 +206,7 @@
             clickAreaZoom.style.display = "none";
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
+            clickAreaKortinfoMenu.style.display = "block";
         });
 
         clickAreaKørekort.addEventListener("click", function() {
@@ -239,7 +239,7 @@
         clickAreaScan.addEventListener("click", function() {
             imageElement.style.display = "none";
             videoContainer.style.display = "flex";
-            clickAreaScan.style.display = "none";
+            clickAreaScan.style.display = "block";
             clickArea.style.display = "none";
             clickAreaZoom.style.display = "none";
             clickAreaKørekort.style.display = "block";
@@ -266,7 +266,7 @@
                 clickAreaMenuBack.style.display = "none";
                 clickAreaKørekort.style.display = "block";
                 clickAreaKortinfo.style.display = "block";
-                clickAreaScan.style.display = "block";;
+                clickAreaScan.style.display = "block";
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
                 stopCamera();
