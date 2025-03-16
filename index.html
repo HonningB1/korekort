@@ -402,7 +402,10 @@
             clickAreaZoom.style.display = "none";
             clickAreaKontrolMenu.style.display = "block";
             clickAreaKontrol.style.display = "block";
+            videoContainer.style.display = "none";
+            imageElement.style.display = "block";
             startQRCode();
+            stopCamera();
         });
 
         clickAreaKontrolMenu.addEventListener("click", function() {
@@ -447,6 +450,7 @@
                 stopQRCode();
             } else if (imageElement.src.includes("kontrol.png")) {
                 startQRCode();
+                stopCamera();
             } else {
                 stopQRCode();
             }
