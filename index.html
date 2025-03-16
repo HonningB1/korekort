@@ -240,20 +240,22 @@
         function changeImageWithTransition(newSrc) {
             const slideInImages = ["forstørretbillede.png", "menu.png", "menukontrol.png", "menukortinfo.png"];
             const fadeImages = ["side1.png", "scan.png", "kontrol.png", "kortinfo.png"];
-    
+
             imageElement.style.animation = "none";
-    
+
             if (slideInImages.some(img => newSrc.includes(img))) {
                 imageElement.style.animation = "slideInFromRight 0.15s ease-in-out";
             } else if (fadeImages.some(img => newSrc.includes(img))) {
                 imageElement.style.animation = "fadeIn 0.15s ease-in-out";
             }
-    
+
             imageElement.src = newSrc;
-    
+
             // Stop QR-koden ved "menukontrol.png"
             if (newSrc.includes("menukontrol.png")) {
+                console.log("Skifter til menukontrol.png - stopper QR-kode");
                 stopQRCode();
+                qrCanvas.style.display = "none";  // Ekstra sikkerhed for at skjule den
             }
         }
     
@@ -463,8 +465,8 @@
             clickAreaKontrol.style.display = "none";
             clickAreaKontrolMenu.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "block";
-            qrCanvas.style.display = "none";
-            stopQRCode(); // Sikrer QR-koden stoppes
+            qrCanvas.style.display = "none"; // Skjul QR-koden før vi stopper den
+            stopQRCode(); // Stop QR-koden
         });
     
         clickAreaKontrolMenuBack.addEventListener("click", function() {
@@ -498,8 +500,8 @@
                 startQRCode();
                 stopCamera();
             } else if (imageElement.src.includes("menukontrol.png")) {
-                stopQRCode(); // Ekstra sikkerhed for at stoppe QR-koden
                 qrCanvas.style.display = "none";
+                stopQRCode(); // Ekstra sikkerhed for at stoppe QR-koden
             } else {
                 stopQRCode();
             }
