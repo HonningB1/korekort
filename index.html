@@ -233,25 +233,25 @@
     
         const qrCanvas = document.getElementById("qrCanvas");
         const ctx = qrCanvas.getContext("2d");
-        let qrInterval = null;
+        let qrInterval = null; // Global variabel til at holde styr på intervallet
         let stream = null;
     
         // Funktion til at skifte billede med den korrekte transition
         function changeImageWithTransition(newSrc) {
             const slideInImages = ["forstørretbillede.png", "menu.png", "menukontrol.png", "menukortinfo.png"];
             const fadeImages = ["side1.png", "scan.png", "kontrol.png", "kortinfo.png"];
-
+    
             imageElement.style.animation = "none";
-
+    
             if (slideInImages.some(img => newSrc.includes(img))) {
-                imageElement.style.animation = "slideInFromRight 0.15s ease-in-out"; // Ændret til 0,15s
+                imageElement.style.animation = "slideInFromRight 0.15s ease-in-out";
             } else if (fadeImages.some(img => newSrc.includes(img))) {
-                imageElement.style.animation = "fadeIn 0.15s ease-in-out"; // Ændret til 0,15s
+                imageElement.style.animation = "fadeIn 0.15s ease-in-out";
             }
-
+    
             imageElement.src = newSrc;
-
-            // Ekstra kontrol for at stoppe QR-koden ved "menukontrol.png"
+    
+            // Stop QR-koden ved "menukontrol.png"
             if (newSrc.includes("menukontrol.png")) {
                 stopQRCode();
             }
@@ -299,20 +299,28 @@
             ctx.fillRect(pixelSize * 2, qrCanvas.height - eyeSize + pixelSize * 2, innerEyeSize, innerEyeSize);
         }
     
+        // Start QR-kode opdatering
         function startQRCode() {
-            qrCanvas.style.display = "block";
-            drawFakeQRCode();
-            qrInterval = setInterval(drawFakeQRCode, 450);
-        }
-    
-        function stopQRCode() {
-            qrCanvas.style.display = "none";
+            // Stop ethvert eksisterende interval først for at undgå acceleration
             if (qrInterval) {
                 clearInterval(qrInterval);
                 qrInterval = null;
             }
+            qrCanvas.style.display = "block";
+            drawFakeQRCode();
+            qrInterval = setInterval(drawFakeQRCode, 450); // Fast hastighed på 450ms
         }
     
+        // Stop QR-kode opdatering
+        function stopQRCode() {
+            qrCanvas.style.display = "none";
+            if (qrInterval) {
+                clearInterval(qrInterval);
+                qrInterval = null; // Nulstil intervallet
+            }
+        }
+    
+        // Event listeners
         clickArea.addEventListener("click", function() {
             changeImageWithTransition("menu.png");
             clickArea.style.display = "none";
@@ -455,9 +463,9 @@
             clickAreaKontrol.style.display = "none";
             clickAreaKontrolMenu.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "block";
-            stopQRCode(); // Sikrer, at QR-koden stoppes her
+            stopQRCode(); // Sikrer QR-koden stoppes
         });
-
+    
         clickAreaKontrolMenuBack.addEventListener("click", function() {
             changeImageWithTransition("kontrol.png");
             clickAreaKørekort.style.display = "block";
@@ -471,7 +479,7 @@
             clickAreaKontrolMenuBack.style.display = "none";
             startQRCode();
         });
-
+    
         imageElement.addEventListener("load", function() {
             if (imageElement.src.includes("side1.png")) {
                 clickArea.style.display = "block";
