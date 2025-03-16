@@ -463,6 +463,7 @@
             clickAreaKontrol.style.display = "none";
             clickAreaKontrolMenu.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "block";
+            qrCanvas.style.display = "none";
             stopQRCode(); // Sikrer QR-koden stoppes
         });
     
@@ -498,6 +499,7 @@
                 stopCamera();
             } else if (imageElement.src.includes("menukontrol.png")) {
                 stopQRCode(); // Ekstra sikkerhed for at stoppe QR-koden
+                qrCanvas.style.display = "none";
             } else {
                 stopQRCode();
             }
