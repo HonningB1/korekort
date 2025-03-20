@@ -20,15 +20,47 @@
             position: relative;
         }
 
-        .full-image {
+        .image-container {
+            position: relative;
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
+        }
+
+        .full-image {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             transform: translateY(-20px);
             position: absolute;
             top: 0;
             left: 0;
             z-index: 1;
+        }
+
+        .reflection-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translateY(-20px);
+            z-index: 2;
+            display: none; /* Skjult som standard */
+        }
+
+        .reflection-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 60%);
+            pointer-events: none;
+            transition: transform 0.1s ease;
+            z-index: 3;
+            display: none; /* Skjult som standard */
         }
 
         #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-scan, #click-area-back, #click-area-kortinfo-menu, #click-area-menu-back-kortinfo, #click-area-kontrol, #click-area-kontrol-menu, #click-area-kontrol-menu-back {
@@ -153,16 +185,15 @@
             pointer-events: none;
         }
 
-        /* Stil til QR-koden */
         #qrCanvas {
             position: absolute;
-            top: 37%; /* Centrer vertikalt */
-            left: 50%; /* Centrer horisontalt */
-            transform: translate(-50%, -50%); /* Justér til midten */
-            width: 360px; /* Ny bredde */
-            height: 350px; /* Ny højde */
-            display: none; /* Skjult som standard */
-            z-index: 6; /* Over billedet */
+            top: 37%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 360px;
+            height: 350px;
+            display: none;
+            z-index: 6;
         }
     </style>
 </head>
@@ -179,18 +210,22 @@
     <div id="click-area-kontrol-menu"></div>
     <div id="click-area-kontrol-menu-back"></div>
 
-    <img id="image" src="side1.png" alt="Billede" class="full-image">
+    <div class="image-container">
+        <img id="image" src="side1.png" alt="Billede" class="full-image">
+        <img id="reflection-image" src="refleks.png" alt="Refleks" class="reflection-image">
+        <div class="reflection-overlay"></div>
+    </div>
 
     <div id="video-container">
         <video id="video" autoplay muted playsinline></video>
         <img id="overlay" src="scan.png" alt="Scan overlay">
     </div>
 
-    <!-- Canvas til QR-koden med ny størrelse -->
     <canvas id="qrCanvas" width="360" height="350"></canvas>
 
     <script>
         const imageElement = document.getElementById("image");
+        const reflectionImage = document.getElementById("reflection-image");
         const clickArea = document.getElementById("click-area");
         const clickAreaMenuBack = document.getElementById("click-area-menu-back");
         const clickAreaZoom = document.getElementById("click-area-zoom");
@@ -205,15 +240,13 @@
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
         const overlay = document.getElementById("overlay");
+        const reflectionOverlay = document.querySelector(".reflection-overlay");
 
-        // QR-kode canvas
         const qrCanvas = document.getElementById("qrCanvas");
         const ctx = qrCanvas.getContext("2d");
         let qrInterval = null;
-
         let stream = null;
 
-        // Funktion til at stoppe kameraet
         function stopCamera() {
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
@@ -222,11 +255,9 @@
             }
         }
 
-        // Funktion til at tegne en falsk QR-kode
         function drawFakeQRCode() {
             ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
-
-            const pixelSize = 5; // Justeret for større canvas
+            const pixelSize = 5;
             const gridWidth = Math.floor(qrCanvas.width / pixelSize);
             const gridHeight = Math.floor(qrCanvas.height / pixelSize);
 
@@ -237,37 +268,31 @@
                 }
             }
 
-            // Tegn "øjne" med passende størrelse
-            const eyeSize = pixelSize * 7; // Større øjne til større QR-kode
+            const eyeSize = pixelSize * 7;
             const innerEyeSize = pixelSize * 3;
 
-            // Top-venstre øje
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, eyeSize, eyeSize);
             ctx.fillStyle = "white";
             ctx.fillRect(pixelSize * 2, pixelSize * 2, innerEyeSize, innerEyeSize);
 
-            // Top-højre øje
             ctx.fillStyle = "black";
             ctx.fillRect(qrCanvas.width - eyeSize, 0, eyeSize, eyeSize);
             ctx.fillStyle = "white";
             ctx.fillRect(qrCanvas.width - eyeSize + pixelSize * 2, pixelSize * 2, innerEyeSize, innerEyeSize);
 
-            // Bund-venstre øje
             ctx.fillStyle = "black";
             ctx.fillRect(0, qrCanvas.height - eyeSize, eyeSize, eyeSize);
             ctx.fillStyle = "white";
             ctx.fillRect(pixelSize * 2, qrCanvas.height - eyeSize + pixelSize * 2, innerEyeSize, innerEyeSize);
         }
 
-        // Start QR-kode opdatering
         function startQRCode() {
             qrCanvas.style.display = "block";
             drawFakeQRCode();
             qrInterval = setInterval(drawFakeQRCode, 450);
         }
 
-        // Stop QR-kode opdatering
         function stopQRCode() {
             qrCanvas.style.display = "none";
             if (qrInterval) {
@@ -275,6 +300,19 @@
                 qrInterval = null;
             }
         }
+
+        // Refleks-effekt på refleks.png baseret på telefonens bevægelser
+        window.addEventListener('deviceorientation', function(event) {
+            if (imageElement.src.includes("side1.png")) {
+                const beta = event.beta;  // -180 til 180 grader (op/ned)
+                const gamma = event.gamma; // -90 til 90 grader (venstre/højre)
+
+                const moveX = (gamma / 90) * 50; // Skaler til procent
+                const moveY = (beta / 180) * 50;
+
+                reflectionOverlay.style.transform = `translate(${moveX}%, ${moveY}%)`;
+            }
+        });
 
         clickArea.addEventListener("click", function() {
             imageElement.src = "menu.png";
@@ -285,8 +323,8 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
             clickAreaKontrol.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
         });
 
@@ -295,8 +333,8 @@
             clickArea.style.display = "block";
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrol.style.display = "block";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "block";
+            reflectionOverlay.style.display = "block";
             stopQRCode();
         });
 
@@ -308,10 +346,8 @@
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
-            clickAreaKortinfoMenu.style.display = "none";
-            clickAreaKontrol.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
         });
 
@@ -323,8 +359,8 @@
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
             clickAreaKortinfoMenu.style.display = "block";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
         });
 
@@ -335,8 +371,8 @@
             clickAreaZoom.style.display = "none";
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "block";
+            reflectionOverlay.style.display = "block";
             stopQRCode();
         });
 
@@ -345,11 +381,8 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaMenuBackKortinfo.style.display = "block";
-            clickAreaKørekort.style.display = "none";
-            clickAreaScan.style.display = "none";
-            clickAreaKontrol.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
         });
         
@@ -361,8 +394,8 @@
             clickAreaMenuBackKortinfo.style.display = "none";
             clickAreaScan.style.display = "block";
             clickAreaKontrol.style.display = "block";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
         });
 
@@ -374,9 +407,8 @@
             clickAreaZoom.style.display = "none";
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
-            clickAreaKortinfoMenu.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
-            clickAreaKontrolMenu.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
@@ -397,13 +429,13 @@
             imageElement.src = "kontrol.png";
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
-            clickAreaKortinfoMenu.style.display = "none";
             clickArea.style.display = "none";
             clickAreaZoom.style.display = "none";
             clickAreaKontrolMenu.style.display = "block";
-            clickAreaKontrol.style.display = "block";
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             startQRCode();
             stopCamera();
         });
@@ -412,12 +444,13 @@
             imageElement.src = "menukontrol.png";
             clickAreaKortinfo.style.display = "none";
             clickAreaKortinfoMenu.style.display = "none";
-            clickAreaMenuBackKortinfo.style.display = "none";
             clickAreaKørekort.style.display = "none";
             clickAreaScan.style.display = "none";
             clickAreaKontrol.style.display = "none";
             clickAreaKontrolMenu.style.display = "none";
-            clickAreaKontrolMenuBack.style.display ="block";
+            clickAreaKontrolMenuBack.style.display = "block";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             stopQRCode();
         });
 
@@ -426,12 +459,12 @@
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
             clickAreaKontrol.style.display = "block";
-            clickAreaKortinfoMenu.style.display = "none";
-            clickAreaMenuBackKortinfo.style.display = "none";
             clickAreaKontrolMenu.style.display = "block";
             clickAreaScan.style.display = "block";
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "none";
+            reflectionImage.style.display = "none";
+            reflectionOverlay.style.display = "none";
             startQRCode();
         });
 
@@ -444,14 +477,21 @@
                 clickAreaKortinfo.style.display = "block";
                 clickAreaKortinfoMenu.style.display = "none";
                 clickAreaScan.style.display = "block";
+                clickAreaKontrol.style.display = "block";
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
+                reflectionImage.style.display = "block";
+                reflectionOverlay.style.display = "block";
                 stopCamera();
                 stopQRCode();
             } else if (imageElement.src.includes("kontrol.png")) {
+                reflectionImage.style.display = "none";
+                reflectionOverlay.style.display = "none";
                 startQRCode();
                 stopCamera();
             } else {
+                reflectionImage.style.display = "none";
+                reflectionOverlay.style.display = "none";
                 stopQRCode();
             }
         });
