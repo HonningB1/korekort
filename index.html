@@ -40,27 +40,35 @@
 
         .reflection-image {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: translateY(-20px);
+            top: 18.3%; /* Centrer vertikalt */
+            left: 51%; /* Centrer horisontalt */
+            width: 22.5%; /* Gør billedet mindre */
+            height: auto; /* Bevar proportioner */
+            transform: translate(-60%, -60%); /* Juster til midten */
             z-index: 2;
             display: none; /* Skjult som standard */
         }
 
-        .reflection-overlay {
+        /* Tilføjet: Glow-effekt til refleks.png */
+        .reflection-glow {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 60%);
-            pointer-events: none;
-            transition: transform 0.1s ease;
+            top: 18.3%;
+            left: 51%;
+            width: 22.5%;
+            height: auto;
+            transform: translate(-60%, -60%);
             z-index: 3;
-            display: none; /* Skjult som standard */
+            pointer-events: none;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.7) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            opacity: 0;
+            mix-blend-mode: overlay;
+            transition: opacity 0.3s ease;
+            display: none;
         }
 
         #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-scan, #click-area-back, #click-area-kortinfo-menu, #click-area-menu-back-kortinfo, #click-area-kontrol, #click-area-kontrol-menu, #click-area-kontrol-menu-back {
@@ -213,7 +221,8 @@
     <div class="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
         <img id="reflection-image" src="refleks.png" alt="Refleks" class="reflection-image">
-        <div class="reflection-overlay"></div>
+        <!-- Tilføjet: Glow overlay til refleks-effekt -->
+        <div id="reflection-glow" class="reflection-glow"></div>
     </div>
 
     <div id="video-container">
@@ -226,6 +235,7 @@
     <script>
         const imageElement = document.getElementById("image");
         const reflectionImage = document.getElementById("reflection-image");
+        const reflectionGlow = document.getElementById("reflection-glow");
         const clickArea = document.getElementById("click-area");
         const clickAreaMenuBack = document.getElementById("click-area-menu-back");
         const clickAreaZoom = document.getElementById("click-area-zoom");
@@ -240,7 +250,6 @@
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
         const overlay = document.getElementById("overlay");
-        const reflectionOverlay = document.querySelector(".reflection-overlay");
 
         const qrCanvas = document.getElementById("qrCanvas");
         const ctx = qrCanvas.getContext("2d");
@@ -301,18 +310,35 @@
             }
         }
 
-        // Refleks-effekt på refleks.png baseret på telefonens bevægelser
-        window.addEventListener('deviceorientation', function(event) {
+        // Tilføjet: Bevægelsesfølsom refleks-effekt
+        function handleOrientation(event) {
             if (imageElement.src.includes("side1.png")) {
                 const beta = event.beta;  // -180 til 180 grader (op/ned)
                 const gamma = event.gamma; // -90 til 90 grader (venstre/højre)
-
-                const moveX = (gamma / 90) * 50; // Skaler til procent
-                const moveY = (beta / 180) * 50;
-
-                reflectionOverlay.style.transform = `translate(${moveX}%, ${moveY}%)`;
+                
+                // Normaliser vinklerne til værdier mellem -1 og 1
+                const normalizedBeta = beta / 180;
+                const normalizedGamma = gamma / 90;
+                
+                // Beregn position baseret på vinkler
+                const posX = 50 + (normalizedGamma * 40);
+                const posY = 50 + (normalizedBeta * 40);
+                
+                // Anvend transform til glow-effekten
+                reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
+                
+                // Juster opacity baseret på hvor meget enheden vippes
+                const intensity = Math.min(0.7, Math.abs(normalizedGamma) + Math.abs(normalizedBeta));
+                reflectionGlow.style.opacity = intensity;
             }
-        });
+        }
+
+        // Tilføjet: Lytter til enhedens bevægelser
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+            console.log("DeviceOrientationEvent understøttes ikke på denne enhed");
+        }
 
         clickArea.addEventListener("click", function() {
             imageElement.src = "menu.png";
@@ -324,7 +350,7 @@
             clickAreaScan.style.display = "none";
             clickAreaKontrol.style.display = "none";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
         });
 
@@ -334,7 +360,7 @@
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrol.style.display = "block";
             reflectionImage.style.display = "block";
-            reflectionOverlay.style.display = "block";
+            reflectionGlow.style.display = "block";
             stopQRCode();
         });
 
@@ -347,7 +373,7 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
         });
 
@@ -360,7 +386,7 @@
             imageElement.style.display = "block";
             clickAreaKortinfoMenu.style.display = "block";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
         });
 
@@ -372,7 +398,7 @@
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
             reflectionImage.style.display = "block";
-            reflectionOverlay.style.display = "block";
+            reflectionGlow.style.display = "block";
             stopQRCode();
         });
 
@@ -382,7 +408,7 @@
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaMenuBackKortinfo.style.display = "block";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
         });
         
@@ -395,7 +421,7 @@
             clickAreaScan.style.display = "block";
             clickAreaKontrol.style.display = "block";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
         });
 
@@ -408,7 +434,7 @@
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
@@ -435,7 +461,7 @@
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             startQRCode();
             stopCamera();
         });
@@ -450,7 +476,7 @@
             clickAreaKontrolMenu.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "block";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             stopQRCode();
         });
 
@@ -464,7 +490,7 @@
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "none";
             reflectionImage.style.display = "none";
-            reflectionOverlay.style.display = "none";
+            reflectionGlow.style.display = "none";
             startQRCode();
         });
 
@@ -481,17 +507,17 @@
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
                 reflectionImage.style.display = "block";
-                reflectionOverlay.style.display = "block";
+                reflectionGlow.style.display = "block";
                 stopCamera();
                 stopQRCode();
             } else if (imageElement.src.includes("kontrol.png")) {
                 reflectionImage.style.display = "none";
-                reflectionOverlay.style.display = "none";
+                reflectionGlow.style.display = "none";
                 startQRCode();
                 stopCamera();
             } else {
                 reflectionImage.style.display = "none";
-                reflectionOverlay.style.display = "none";
+                reflectionGlow.style.display = "none";
                 stopQRCode();
             }
         });
