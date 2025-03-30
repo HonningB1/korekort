@@ -18,9 +18,12 @@
             height: 100vh;
             background-color: #01152e;
             position: relative;
+            transition: background-color 0.3s;
         }
 
-        
+        body.reflection-active {
+            background-color: #002a5a;
+        }
 
         .image-container {
             position: relative;
@@ -42,35 +45,39 @@
 
         .reflection-image {
             position: absolute;
-            top: 18.3%; /* Centrer vertikalt */
-            left: 51%; /* Centrer horisontalt */
-            width: 22.5%; /* Gør billedet mindre */
-            height: auto; /* Bevar proportioner */
-            transform: translate(-60%, -60%); /* Juster til midten */
-            z-index: 2;
-            display: none; /* Skjult som standard */
-        }
-
-        /* Tilføjet: Glow-effekt til refleks.png */
-        .reflection-glow {
-            position: absolute;
             top: 18.3%;
             left: 51%;
             width: 22.5%;
             height: auto;
             transform: translate(-60%, -60%);
-            z-index: 3;
-            pointer-events: none;
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.7) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            opacity: 0;
-            mix-blend-mode: overlay;
-            transition: opacity 0.3s ease;
+            z-index: 2;
             display: none;
+            -webkit-mask: 
+                linear-gradient(135deg, #000c 40%, #000, #000c 60%)
+                100% 100%/250% 250%;
+            mask: 
+                linear-gradient(135deg, #000c 40%, #000, #000c 60%)
+                100% 100%/250% 250%;
+            transition: -webkit-mask-position 0.5s ease, mask-position 0.5s ease;
+        }
+
+        body.reflection-active .reflection-image {
+            -webkit-mask-position: 0 0;
+            mask-position: 0 0;
+        }
+
+        #activate-reflection {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 15px;
+            background: rgba(0,90,180,0.7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            z-index: 10;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-scan, #click-area-back, #click-area-kortinfo-menu, #click-area-menu-back-kortinfo, #click-area-kontrol, #click-area-kontrol-menu, #click-area-kontrol-menu-back {
@@ -220,15 +227,11 @@
     <div id="click-area-kontrol-menu"></div>
     <div id="click-area-kontrol-menu-back"></div>
 
-    <button id="activate-tilt" style="position:absolute; z-index:10; top:10px; left:10px; padding:10px;">
-        Aktiver Tilt-effekt
-    </button>
+    <button id="activate-reflection">Aktiver refleks</button>
 
     <div class="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
         <img id="reflection-image" src="refleks.png" alt="Refleks" class="reflection-image">
-        <!-- Tilføjet: Glow overlay til refleks-effekt -->
-        <div id="reflection-glow" class="reflection-glow"></div>
     </div>
 
     <div id="video-container">
@@ -241,7 +244,7 @@
     <script>
         const imageElement = document.getElementById("image");
         const reflectionImage = document.getElementById("reflection-image");
-        const reflectionGlow = document.getElementById("reflection-glow");
+        const activateReflectionBtn = document.getElementById("activate-reflection");
         const clickArea = document.getElementById("click-area");
         const clickAreaMenuBack = document.getElementById("click-area-menu-back");
         const clickAreaZoom = document.getElementById("click-area-zoom");
@@ -249,10 +252,10 @@
         const clickAreaKørekort = document.getElementById("click-area-kørekort");
         const clickAreaKortinfoMenu = document.getElementById("click-area-kortinfo-menu");
         const clickAreaMenuBackKortinfo = document.getElementById("click-area-menu-back-kortinfo");
+        const clickAreaScan = document.getElementById("click-area-scan");
         const clickAreaKontrol = document.getElementById("click-area-kontrol");
         const clickAreaKontrolMenu = document.getElementById("click-area-kontrol-menu");
         const clickAreaKontrolMenuBack = document.getElementById("click-area-kontrol-menu-back");
-        const clickAreaScan = document.getElementById("click-area-scan");
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
         const overlay = document.getElementById("overlay");
@@ -261,6 +264,14 @@
         const ctx = qrCanvas.getContext("2d");
         let qrInterval = null;
         let stream = null;
+
+        // Aktiver refleks-effekten
+        activateReflectionBtn.addEventListener('click', function() {
+            document.body.classList.toggle('reflection-active');
+            this.textContent = document.body.classList.contains('reflection-active') 
+                ? 'Deaktiver refleks' 
+                : 'Aktiver refleks';
+        });
 
         function stopCamera() {
             if (stream) {
@@ -316,59 +327,6 @@
             }
         }
 
-        let orientationEnabled = false;
-
-        document.getElementById('activate-tilt').addEventListener('click', () => {
-            orientationEnabled = true;
-            if (window.DeviceOrientationEvent) {
-                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    // iOS 13+ skal have eksplicit tilladelse
-                    DeviceOrientationEvent.requestPermission()
-                        .then(response => {
-                            if (response === 'granted') {
-                                window.addEventListener('deviceorientation', handleOrientation);
-                                alert("Tilt-effekt aktiveret! Vip telefonen for at se effekten.");
-                            }
-                        })
-                        .catch(console.error);
-                } else {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                }
-            } else {
-                alert("Din enhed understøtter ikke bevægelsessensorer");
-            }
-        });
-
-        function handleOrientation(event) {
-            if (!orientationEnabled) return;
-            
-            console.log("Beta:", event.beta, "Gamma:", event.gamma);
-            
-            if (imageElement.src.includes("side1.png")) {
-                const beta = event.beta || 0;  // Fallback til 0
-                const gamma = event.gamma || 0;
-                
-                const posX = 50 + (gamma / 90 * 40);
-                const posY = 50 + (beta / 180 * 40);
-                
-                reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
-                reflectionGlow.style.opacity = Math.min(0.7, 
-                    (Math.abs(gamma) / 90 + Math.abs(beta) / 180) / 2);
-            }
-        }
-
-        // Fallback for desktop
-        if (!window.DeviceOrientationEvent) {
-            document.addEventListener('mousemove', (e) => {
-                if (imageElement.src.includes("side1.png")) {
-                    const posX = (e.clientX / window.innerWidth) * 100;
-                    const posY = (e.clientY / window.innerHeight) * 100;
-                    reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
-                    reflectionGlow.style.opacity = '0.5';
-                }
-            });
-        }
-
         clickArea.addEventListener("click", function() {
             imageElement.src = "menu.png";
             clickArea.style.display = "none";
@@ -379,7 +337,7 @@
             clickAreaScan.style.display = "none";
             clickAreaKontrol.style.display = "none";
             reflectionImage.style.display = "none";
-            reflectionGlow.style.display = "none";
+            document.body.classList.remove('reflection-active');
             stopQRCode();
         });
 
@@ -536,23 +494,16 @@
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
                 reflectionImage.style.display = "block";
-                reflectionGlow.style.display = "block";
                 stopCamera();
                 stopQRCode();
             } else if (imageElement.src.includes("kontrol.png")) {
                 reflectionImage.style.display = "none";
-                reflectionGlow.style.display = "none";
+                document.body.classList.remove('reflection-active');
                 startQRCode();
                 stopCamera();
             } else {
                 reflectionImage.style.display = "none";
-                reflectionGlow.style.display = "none";
-                stopQRCode();
-            }
-        });
-
-        imageElement.addEventListener("load", function() {
-            if (imageElement.src.includes("menukontrol.png")) {
+                document.body.classList.remove('reflection-active');
                 stopQRCode();
             }
         });
