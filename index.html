@@ -20,6 +20,8 @@
             position: relative;
         }
 
+        
+
         .image-container {
             position: relative;
             width: 100vw;
@@ -218,6 +220,10 @@
     <div id="click-area-kontrol-menu"></div>
     <div id="click-area-kontrol-menu-back"></div>
 
+    <button id="activate-tilt" style="position:absolute; z-index:10; top:10px; left:10px; padding:10px;">
+        Aktiver Tilt-effekt
+    </button>
+
     <div class="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
         <img id="reflection-image" src="refleks.png" alt="Refleks" class="reflection-image">
@@ -310,34 +316,57 @@
             }
         }
 
-        // Tilføjet: Bevægelsesfølsom refleks-effekt
+        let orientationEnabled = false;
+
+        document.getElementById('activate-tilt').addEventListener('click', () => {
+            orientationEnabled = true;
+            if (window.DeviceOrientationEvent) {
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    // iOS 13+ skal have eksplicit tilladelse
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response === 'granted') {
+                                window.addEventListener('deviceorientation', handleOrientation);
+                                alert("Tilt-effekt aktiveret! Vip telefonen for at se effekten.");
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                }
+            } else {
+                alert("Din enhed understøtter ikke bevægelsessensorer");
+            }
+        });
+
         function handleOrientation(event) {
+            if (!orientationEnabled) return;
+            
+            console.log("Beta:", event.beta, "Gamma:", event.gamma);
+            
             if (imageElement.src.includes("side1.png")) {
-                const beta = event.beta;  // -180 til 180 grader (op/ned)
-                const gamma = event.gamma; // -90 til 90 grader (venstre/højre)
+                const beta = event.beta || 0;  // Fallback til 0
+                const gamma = event.gamma || 0;
                 
-                // Normaliser vinklerne til værdier mellem -1 og 1
-                const normalizedBeta = beta / 180;
-                const normalizedGamma = gamma / 90;
+                const posX = 50 + (gamma / 90 * 40);
+                const posY = 50 + (beta / 180 * 40);
                 
-                // Beregn position baseret på vinkler
-                const posX = 50 + (normalizedGamma * 40);
-                const posY = 50 + (normalizedBeta * 40);
-                
-                // Anvend transform til glow-effekten
                 reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
-                
-                // Juster opacity baseret på hvor meget enheden vippes
-                const intensity = Math.min(0.7, Math.abs(normalizedGamma) + Math.abs(normalizedBeta));
-                reflectionGlow.style.opacity = intensity;
+                reflectionGlow.style.opacity = Math.min(0.7, 
+                    (Math.abs(gamma) / 90 + Math.abs(beta) / 180) / 2);
             }
         }
 
-        // Tilføjet: Lytter til enhedens bevægelser
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', handleOrientation);
-        } else {
-            console.log("DeviceOrientationEvent understøttes ikke på denne enhed");
+        // Fallback for desktop
+        if (!window.DeviceOrientationEvent) {
+            document.addEventListener('mousemove', (e) => {
+                if (imageElement.src.includes("side1.png")) {
+                    const posX = (e.clientX / window.innerWidth) * 100;
+                    const posY = (e.clientY / window.innerHeight) * 100;
+                    reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
+                    reflectionGlow.style.opacity = '0.5';
+                }
+            });
         }
 
         clickArea.addEventListener("click", function() {
