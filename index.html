@@ -20,7 +20,33 @@
             position: relative;
         }
 
-        
+        .container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .refleks {
+            width: 100%;
+            height: 100%;
+            background: url('refleks.png') no-repeat center;
+            background-size: cover;
+            position: relative;
+        }
+
+        /* Shine-effekt */
+        .refleks::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            opacity: 0.7;
+            transform: translate(-50%, -50%) rotate(0deg);
+            pointer-events: none;
+        }
 
         .image-container {
             position: relative;
@@ -243,6 +269,10 @@
         Aktiver Tilt-effekt
     </button>
 
+    <div class="container">
+        <div class="refleks"></div>
+    </div>
+
     <div class="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
         <img id="reflection-image" src="refleks.png" alt="Refleks" class="reflection-image">
@@ -340,21 +370,19 @@
         document.getElementById('activate-tilt').addEventListener('click', () => {
             orientationEnabled = true;
             if (window.DeviceOrientationEvent) {
-                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    // iOS 13+ skal have eksplicit tilladelse
-                    DeviceOrientationEvent.requestPermission()
-                        .then(response => {
-                            if (response === 'granted') {
-                                window.addEventListener('deviceorientation', handleOrientation);
-                                alert("Tilt-effekt aktiveret! Vip telefonen for at se effekten.");
-                            }
-                        })
-                        .catch(console.error);
-                } else {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                }
+                window.addEventListener("deviceorientation", function(event) {
+                    let x = event.gamma; // Venstre/Højre hældning (-90 til 90)
+                    let y = event.beta;  // Forover/Bakover hældning (-180 til 180)
+
+                    // Beregn shine-effektens position
+                    let shineX = (x / 90) * 50; // Omregn gamma-værdien til en procent
+                    let shineY = (y / 180) * 50; // Omregn beta-værdien til en procent
+
+                    // Opdater shine-effektens position
+                    document.querySelector('.refleks::before').style.transform = `translate(${shineX}%, ${shineY}%) rotate(120deg)`;
+                }, true);
             } else {
-                alert("Din enhed understøtter ikke bevægelsessensorer");
+                console.log("DeviceOrientationEvent understøttes ikke på denne enhed.");
             }
         });
 
