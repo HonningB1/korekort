@@ -356,26 +356,26 @@
 
         function handleOrientation(event) {
             if (!orientationEnabled) return;
-            
-            console.log("Beta:", event.beta, "Gamma:", event.gamma);
-            
-            if (imageElement.src.includes("side1.png")) {
-                const beta = event.beta || 0;  // Fallback til 0
-                const gamma = event.gamma || 0;
-                
-                const posX = 50 + (gamma / 90 * 40);
-                const posY = 50 + (beta / 180 * 40);
-                
-                reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
-                reflectionGlow.style.opacity = Math.min(0.7, 
-                    (Math.abs(gamma) / 90 + Math.abs(beta) / 180) / 2);
-            }
+
+            const beta = event.beta || 0;
+            const gamma = event.gamma || 0;
+
+            const posX = 50 + (gamma / 90 * 40);
+            const posY = 50 + (beta / 180 * 40);
+
+            reflectionImage.style.display = "block"; // Sørg for at refleksbilledet vises
+            reflectionGlow.style.display = "block"; // Sørg for at glow-effekten vises
+
+            reflectionImage.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
+            reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
+
+            reflectionGlow.style.opacity = Math.min(0.7, (Math.abs(gamma) / 90 + Math.abs(beta) / 180) / 2);
         }
 
         // Fallback for desktop
         if (!window.DeviceOrientationEvent) {
             document.addEventListener('mousemove', (e) => {
-                if (imageElement.src.includes("side1.png")) {
+                if (imageElement.src.endsWith("side1.png")) {
                     const posX = (e.clientX / window.innerWidth) * 100;
                     const posY = (e.clientY / window.innerHeight) * 100;
                     reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
