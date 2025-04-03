@@ -237,9 +237,9 @@
     <div id="click-area-kontrol-menu"></div>
     <div id="click-area-kontrol-menu-back"></div>
 
-    <button id="activate-tilt" style="position:absolute; z-index:10; top:10px; left:10px; padding:10px;">
+    <!--<button id="activate-tilt" style="position:absolute; z-index:10; top:10px; left:10px; padding:10px;">
         Aktiver Tilt-effekt
-    </button>
+    </button> -->
 
     <div class="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
@@ -293,6 +293,7 @@
             const gridWidth = Math.floor(qrCanvas.width / pixelSize);
             const gridHeight = Math.floor(qrCanvas.height / pixelSize);
 
+            // Tegner tilfældige pixels i sort/hvid
             for (let x = 0; x < gridWidth; x++) {
                 for (let y = 0; y < gridHeight; y++) {
                     ctx.fillStyle = Math.random() > 0.5 ? "black" : "white";
@@ -301,22 +302,73 @@
             }
 
             const eyeSize = pixelSize * 7;
+            const smallEyeSize = pixelSize * 5;
+            const borderSize = pixelSize; // 1 pixel bred kant
             const innerEyeSize = pixelSize * 3;
+            const innerOffset = pixelSize * 2; // Afstand fra kanten til den indre firkant
 
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, eyeSize, eyeSize);
-            ctx.fillStyle = "white";
-            ctx.fillRect(pixelSize * 2, pixelSize * 2, innerEyeSize, innerEyeSize);
+            function drawEye(x, y) {
+                // Yderkant (1 pixel bred)
+                ctx.fillStyle = "black";
+                ctx.fillRect(x, y, eyeSize, eyeSize);
 
-            ctx.fillStyle = "black";
-            ctx.fillRect(qrCanvas.width - eyeSize, 0, eyeSize, eyeSize);
-            ctx.fillStyle = "white";
-            ctx.fillRect(qrCanvas.width - eyeSize + pixelSize * 2, pixelSize * 2, innerEyeSize, innerEyeSize);
+                // Indre hvid firkant
+                ctx.fillStyle = "white";
+                ctx.fillRect(x + borderSize, y + borderSize, eyeSize - 2 * borderSize, eyeSize - 2 * borderSize);
 
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, qrCanvas.height - eyeSize, eyeSize, eyeSize);
-            ctx.fillStyle = "white";
-            ctx.fillRect(pixelSize * 2, qrCanvas.height - eyeSize + pixelSize * 2, innerEyeSize, innerEyeSize);
+                // Inderste sorte firkant (3x3 pixels)
+                ctx.fillStyle = "black";
+                ctx.fillRect(x + innerOffset, y + innerOffset, innerEyeSize, innerEyeSize);
+            }
+
+            function drawSmallEye(x, y) {
+                // Yderkant (1 pixel bred)
+                ctx.fillStyle = "black";
+                ctx.fillRect(x, y, smallEyeSize, smallEyeSize);
+
+                // Indre hvid firkant
+                ctx.fillStyle = "white";
+                ctx.fillRect(x + borderSize, y + borderSize, smallEyeSize - 2 * borderSize, smallEyeSize - 2 * borderSize);
+
+                // Midterste sorte pixel (1x1)
+                ctx.fillStyle = "black";
+                ctx.fillRect(x + 2 * pixelSize, y + 2 * pixelSize, pixelSize, pixelSize);
+            }
+
+            // Placerer de fire hjørnemarkører
+            drawEye(0, 0); // Øverste venstre hjørne
+            drawEye(qrCanvas.width - eyeSize, 0); // Øverste højre hjørne
+            drawEye(0, qrCanvas.height - eyeSize); // Nederste venstre hjørne
+            drawEye(qrCanvas.width - eyeSize, qrCanvas.height - eyeSize); // Nederste højre hjørne
+
+            // Hashtag-mønster til små eyes
+            const offset = pixelSize * 4; // Afstand fra kanten
+            const centerX = qrCanvas.width / 2;
+            const centerY = qrCanvas.height / 2;
+
+            const positions = [
+                // Øverste linje af #
+                [offset, offset], 
+                [centerX - smallEyeSize / 2, offset], 
+                [qrCanvas.width - offset - smallEyeSize, offset],
+
+                // Midterste linje af #
+                [offset, centerY - smallEyeSize / 2], 
+                [centerX - smallEyeSize / 2, centerY - smallEyeSize / 2], 
+                [qrCanvas.width - offset - smallEyeSize, centerY - smallEyeSize / 2],
+
+                // Nederste linje af #
+                [offset, qrCanvas.height - offset - smallEyeSize], 
+                [centerX - smallEyeSize / 2, qrCanvas.height - offset - smallEyeSize], 
+                [qrCanvas.width - offset - smallEyeSize, qrCanvas.height - offset - smallEyeSize],
+
+                // Lodrette skæringer af #
+                [centerX - smallEyeSize / 2, offset + (centerY - offset) / 2],
+                [centerX - smallEyeSize / 2, qrCanvas.height - offset - (centerY - offset) / 2]
+            ];
+
+            // Tegner de små "eyes"
+            positions.forEach(([x, y]) => drawSmallEye(x, y));
         }
 
         function startQRCode() {
