@@ -375,8 +375,8 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
             clickAreaKontrol.style.display = "none";
+            clickAreaKontrolMenu.style.display = "none";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
 
@@ -385,8 +385,8 @@
             clickArea.style.display = "block";
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrol.style.display = "block";
+            clickAreaKontrolMenu.style.display = "none";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
 
@@ -399,7 +399,6 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
 
@@ -412,7 +411,6 @@
             imageElement.style.display = "block";
             clickAreaKortinfoMenu.style.display = "block";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
 
@@ -424,7 +422,6 @@
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
 
@@ -434,7 +431,6 @@
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaMenuBackKortinfo.style.display = "block";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
         
@@ -447,7 +443,6 @@
             clickAreaScan.style.display = "block";
             clickAreaKontrol.style.display = "block";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
         });
 
@@ -460,7 +455,6 @@
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
             date.style.display = "none";
-            clickAreaKontrolMenuBack.style.display = "none";
             stopQRCode();
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
@@ -530,6 +524,7 @@
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
                 date.style.display = "block";
+                clickAreaKontrolMenu.style.display = "none";
                 stopCamera();
                 stopQRCode();
             } else if (imageElement.src.includes("kontrol.png")) {
