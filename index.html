@@ -10,6 +10,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -20,9 +23,20 @@
             height: 100vh;
             background-color: #01152e;
             position: relative;
+            font-family: 'Lexend', sans-serif; /* Brug Lexend Light skrifttypen */
         }
 
-        
+        .date-time {
+            position: absolute;
+            top: 78.5%;
+            left: 60%;
+            transform: translateX(-50%);
+            color: #282661;
+            font-size: 12px;
+            text-align: center;
+            z-index: 10;
+            letter-spacing: 0.25%;
+        }
 
         .image-container {
             position: relative;
@@ -251,6 +265,8 @@
 
     <canvas id="qrCanvas" width="360" height="350"></canvas>
 
+    <div class="date-time" id="date-time"></div>
+
     <script>
         const imageElement = document.getElementById("image");
         const reflectionImage = document.getElementById("reflection-image");
@@ -274,6 +290,24 @@
         const ctx = qrCanvas.getContext("2d");
         let qrInterval = null;
         let stream = null;
+
+        function updateDateTime() {
+            const now = new Date();
+            const day = now.getDate();
+            const month = now.toLocaleString('da-DK', { month: 'long' });
+            const year = now.getFullYear();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+
+            const formattedDate = `${day} ${month} ${year} kl. ${hours}:${minutes}`;
+            document.getElementById('date-time').textContent = formattedDate;
+        }
+
+        // Opdater dato og tid hver minut
+        setInterval(updateDateTime, 60000);
+
+        // Initial visning af dato og tid
+        updateDateTime();
 
         function stopCamera() {
             if (stream) {
