@@ -237,10 +237,6 @@
     <div id="click-area-kontrol-menu"></div>
     <div id="click-area-kontrol-menu-back"></div>
 
-    <!--<button id="activate-tilt" style="position:absolute; z-index:10; top:10px; left:10px; padding:10px;">
-        Aktiver Tilt-effekt
-    </button> -->
-
     <div class="image-container">
         <img id="image" src="side1.png" alt="Billede" class="full-image">
         <img id="reflection-image" src="refleks.png" alt="Refleks" class="reflection-image">
@@ -335,41 +331,44 @@
                 ctx.fillRect(x + 2 * pixelSize, y + 2 * pixelSize, pixelSize, pixelSize);
             }
 
-            // Placerer de fire hjørnemarkører
+            // Placerer de fire store hjørnemarkører
             drawEye(0, 0); // Øverste venstre hjørne
             drawEye(qrCanvas.width - eyeSize, 0); // Øverste højre hjørne
             drawEye(0, qrCanvas.height - eyeSize); // Nederste venstre hjørne
             drawEye(qrCanvas.width - eyeSize, qrCanvas.height - eyeSize); // Nederste højre hjørne
 
-            // Hashtag-mønster til små eyes
+            // Beregner midtpunkt og placeringer af small eyes
             const offset = pixelSize * 4; // Afstand fra kanten
             const centerX = qrCanvas.width / 2;
             const centerY = qrCanvas.height / 2;
+            const lineGap = pixelSize * 10; // Afstand mellem linjerne i #
 
             const positions = [
-                // Øverste linje af #
-                [offset, offset], 
-                [centerX - smallEyeSize / 2, offset], 
-                [qrCanvas.width - offset - smallEyeSize, offset],
+                // Nederste lodrette ender af #
+                [centerX - lineGap, qrCanvas.height - offset - smallEyeSize], // Venstre lodrette bund
+                [centerX + lineGap, qrCanvas.height - offset - smallEyeSize], // Højre lodrette bund
 
-                // Midterste linje af #
-                [offset, centerY - smallEyeSize / 2], 
-                [centerX - smallEyeSize / 2, centerY - smallEyeSize / 2], 
-                [qrCanvas.width - offset - smallEyeSize, centerY - smallEyeSize / 2],
+                // Midterste vandrette streger - ender
+                [offset, centerY - lineGap], // Venstre ende af øverste vandrette streg
+                [qrCanvas.width - offset - smallEyeSize, centerY - lineGap], // Højre ende af øverste vandrette streg
+                [offset, centerY + lineGap - smallEyeSize], // Venstre ende af nederste vandrette streg
+                [qrCanvas.width - offset - smallEyeSize, centerY + lineGap - smallEyeSize], // Højre ende af nederste vandrette streg
 
-                // Nederste linje af #
-                [offset, qrCanvas.height - offset - smallEyeSize], 
-                [centerX - smallEyeSize / 2, qrCanvas.height - offset - smallEyeSize], 
-                [qrCanvas.width - offset - smallEyeSize, qrCanvas.height - offset - smallEyeSize],
+                // Midterste vandrette streger - skæringer (de to gange hvor den skærer med de lodrette streger)
+                [centerX - lineGap, centerY - 25 - smallEyeSize], // Skæring venstre top
+                [centerX + lineGap, centerY - 25 - smallEyeSize], // Skæring højre top
+                [centerX - lineGap, centerY + smallEyeSize], // Skæring venstre bund
+                [centerX + lineGap, centerY + smallEyeSize], // Skæring højre bund
 
-                // Lodrette skæringer af #
-                [centerX - smallEyeSize / 2, offset + (centerY - offset) / 2],
-                [centerX - smallEyeSize / 2, qrCanvas.height - offset - (centerY - offset) / 2]
+                // Øverste lodrette ender af #
+                [centerX - lineGap, offset], // Venstre lodrette top
+                [centerX + lineGap, offset] // Højre lodrette top
             ];
 
             // Tegner de små "eyes"
             positions.forEach(([x, y]) => drawSmallEye(x, y));
         }
+
 
         function startQRCode() {
             qrCanvas.style.display = "block";
@@ -383,56 +382,6 @@
                 clearInterval(qrInterval);
                 qrInterval = null;
             }
-        }
-
-        let orientationEnabled = false;
-
-        document.getElementById('activate-tilt').addEventListener('click', () => {
-            orientationEnabled = true;
-            if (window.DeviceOrientationEvent) {
-                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    // iOS 13+ skal have eksplicit tilladelse
-                    DeviceOrientationEvent.requestPermission()
-                        .then(response => {
-                            if (response === 'granted') {
-                                window.addEventListener('deviceorientation', handleOrientation);
-                                alert("Tilt-effekt aktiveret! Vip telefonen for at se effekten.");
-                            }
-                        })
-                        .catch(console.error);
-                } else {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                }
-            } else {
-                alert("Din enhed understøtter ikke bevægelsessensorer");
-            }
-        });
-
-        function handleOrientation(event) {
-            if (!orientationEnabled) return;
-
-            const beta = event.beta || 0;
-            const gamma = event.gamma || 0;
-
-            // Beregn maskens nye position baseret på tilt
-            const maskX = 50 + (gamma / 90 * 50); // Justér gamma (venstre/højre tilt)
-            const maskY = 50 + (beta / 180 * 50); // Justér beta (frem/tilbage tilt)
-
-            // Opdater mask-positionen dynamisk
-            reflectionImage.style.webkitMaskPosition = `${maskX}% ${maskY}%`;
-            reflectionImage.style.maskPosition = `${maskX}% ${maskY}%`;
-        }
-
-        // Fallback for desktop
-        if (!window.DeviceOrientationEvent) {
-            document.addEventListener('mousemove', (e) => {
-                if (imageElement.src.endsWith("side1.png")) {
-                    const posX = (e.clientX / window.innerWidth) * 100;
-                    const posY = (e.clientY / window.innerHeight) * 100;
-                    reflectionGlow.style.transform = `translate(-60%, -60%) translate(${posX}%, ${posY}%)`;
-                    reflectionGlow.style.opacity = '0.5';
-                }
-            });
         }
 
         clickArea.addEventListener("click", function() {
