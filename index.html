@@ -232,6 +232,7 @@
         const videoContainer = document.getElementById("video-container");
         const video = document.getElementById("video");
         const overlay = document.getElementById("overlay");
+        const date = document.getElementById("date-time");
 
         const qrCanvas = document.getElementById("qrCanvas");
         const ctx = qrCanvas.getContext("2d");
@@ -279,7 +280,7 @@
             }
 
             const eyeSize = pixelSize * 7;
-            const smallEyeSize = pixelSize * 5;
+            // const smallEyeSize = pixelSize * 5;
             const borderSize = pixelSize; // 1 pixel bred kant
             const innerEyeSize = pixelSize * 3;
             const innerOffset = pixelSize * 2; // Afstand fra kanten til den indre firkant
@@ -298,7 +299,7 @@
                 ctx.fillRect(x + innerOffset, y + innerOffset, innerEyeSize, innerEyeSize);
             }
 
-            function drawSmallEye(x, y) {
+            /* function drawSmallEye(x, y) {
                 // Yderkant (1 pixel bred)
                 ctx.fillStyle = "black";
                 ctx.fillRect(x, y, smallEyeSize, smallEyeSize);
@@ -310,7 +311,7 @@
                 // Midterste sorte pixel (1x1)
                 ctx.fillStyle = "black";
                 ctx.fillRect(x + 2 * pixelSize, y + 2 * pixelSize, pixelSize, pixelSize);
-            }
+            } */
 
             // Placerer de fire store hjørnemarkører
             drawEye(0, 0); // Øverste venstre hjørne
@@ -319,12 +320,12 @@
             drawEye(qrCanvas.width - eyeSize, qrCanvas.height - eyeSize); // Nederste højre hjørne
 
             // Beregner midtpunkt og placeringer af small eyes
-            const offset = pixelSize * 4; // Afstand fra kanten
-            const centerX = qrCanvas.width / 2;
-            const centerY = qrCanvas.height / 2;
-            const lineGap = pixelSize * 10; // Afstand mellem linjerne i #
+            //const offset = pixelSize * 4; // Afstand fra kanten
+            //const centerX = qrCanvas.width / 2;
+            //const centerY = qrCanvas.height / 2;
+            //const lineGap = pixelSize * 10; // Afstand mellem linjerne i #
 
-            const positions = [
+            /*const positions = [
                 // Nederste lodrette ender af #
                 [centerX - lineGap, qrCanvas.height - offset - smallEyeSize], // Venstre lodrette bund
                 [centerX + lineGap, qrCanvas.height - offset - smallEyeSize], // Højre lodrette bund
@@ -347,7 +348,7 @@
             ];
 
             // Tegner de små "eyes"
-            positions.forEach(([x, y]) => drawSmallEye(x, y));
+            positions.forEach(([x, y]) => drawSmallEye(x, y)); */
         }
 
 
@@ -374,6 +375,7 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
             clickAreaKontrol.style.display = "none";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -382,6 +384,7 @@
             clickArea.style.display = "block";
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrol.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -393,6 +396,7 @@
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -404,6 +408,7 @@
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
             clickAreaKortinfoMenu.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -414,6 +419,7 @@
             clickAreaZoom.style.display = "none";
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -422,6 +428,7 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaMenuBackKortinfo.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
         });
         
@@ -433,6 +440,7 @@
             clickAreaMenuBackKortinfo.style.display = "none";
             clickAreaScan.style.display = "block";
             clickAreaKontrol.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -444,6 +452,7 @@
             clickAreaZoom.style.display = "none";
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
@@ -469,6 +478,7 @@
             clickAreaKontrolMenu.style.display = "block";
             videoContainer.style.display = "none";
             imageElement.style.display = "block";
+            date.style.display = "none";
             startQRCode();
             stopCamera();
         });
@@ -482,6 +492,7 @@
             clickAreaKontrol.style.display = "none";
             clickAreaKontrolMenu.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "block";
+            date.style.display = "none";
             stopQRCode();
         });
 
@@ -494,6 +505,7 @@
             clickAreaScan.style.display = "block";
             clickAreaMenuBack.style.display = "none";
             clickAreaKontrolMenuBack.style.display = "none";
+            date.style.display = "none";
             startQRCode();
         });
 
@@ -509,6 +521,7 @@
                 clickAreaKontrol.style.display = "block";
                 videoContainer.style.display = "none";
                 imageElement.style.display = "block";
+                date.style.display = "block";
                 stopCamera();
                 stopQRCode();
             } else if (imageElement.src.includes("kontrol.png")) {
