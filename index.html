@@ -214,40 +214,52 @@
             height: 100%;
             object-fit: cover;
         }
+
+        .scale-wrapper {
+            transform: scale(0.96);
+            transform-origin: center center;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div id="intro-video-container" style="display: flex;">
-            <video id="intro-video" autoplay muted playsinline>
-                <source src="intro.mp4" type="video/mp4">
-            </video>
-        </div>    
+        <div id="app">
+            <div id="intro-video-container" style="display: flex;">
+                <video id="intro-video" autoplay muted playsinline>
+                    <source src="intro.mp4" type="video/mp4">
+                </video>
+            </div>    
+    <div class="scale-wrapper">
+            <div id="click-area"></div>
+            <div id="click-area-menu-back"></div>
+            <div id="click-area-zoom"></div>
+            <div id="click-area-kortinfo"></div>
+            <div id="click-area-kørekort"></div>
+            <div id="click-area-kortinfo-menu"></div>
+            <div id="click-area-menu-back-kortinfo"></div>
+            <div id="click-area-scan"></div>
+            <div id="click-area-kontrol"></div>
+            <div id="click-area-kontrol-menu"></div>
+            <div id="click-area-kontrol-menu-back"></div>
 
-        <div id="click-area"></div>
-        <div id="click-area-menu-back"></div>
-        <div id="click-area-zoom"></div>
-        <div id="click-area-kortinfo"></div>
-        <div id="click-area-kørekort"></div>
-        <div id="click-area-kortinfo-menu"></div>
-        <div id="click-area-menu-back-kortinfo"></div>
-        <div id="click-area-scan"></div>
-        <div id="click-area-kontrol"></div>
-        <div id="click-area-kontrol-menu"></div>
-        <div id="click-area-kontrol-menu-back"></div>
+            <div class="image-container">
+                <img id="image" src="side1.png" alt="Billede" class="full-image">
+            </div>
 
-        <div class="image-container">
-            <img id="image" src="side1.png" alt="Billede" class="full-image">
+            <div id="video-container">
+                <video id="video" autoplay muted playsinline></video>
+                <img id="overlay" src="scan.png" alt="Scan overlay">
+            </div>
+
+            <canvas id="qrCanvas" width="360" height="350"></canvas>
+
+            <div class="date-time" id="date-time"></div>
         </div>
-
-        <div id="video-container">
-            <video id="video" autoplay muted playsinline></video>
-            <img id="overlay" src="scan.png" alt="Scan overlay">
-        </div>
-
-        <canvas id="qrCanvas" width="360" height="350"></canvas>
-
-        <div class="date-time" id="date-time"></div>
     </div>
     <script>
         const imageElement = document.getElementById("image");
