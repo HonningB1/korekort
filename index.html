@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>Web App - Billede</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Kørekort">
@@ -24,6 +24,10 @@
             background-color: #01152e;
             position: relative;
             font-family: 'Lexend', sans-serif; /* Brug Lexend Light skrifttypen */
+            padding-top: env(safe-area-inset-top);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
         }
 
         .date-time {
@@ -219,12 +223,11 @@
     </style>
 </head>
 <body>
-    <div id="intro-video-container">
+    <div id="intro-video-container" style="display: flex;">
         <video id="intro-video" autoplay muted playsinline>
           <source src="intro.mp4" type="video/mp4">
-          Din browser understøtter ikke video tag.
         </video>
-      </div>      
+    </div>    
     <div id="click-area"></div>
     <div id="click-area-menu-back"></div>
     <div id="click-area-zoom"></div>
@@ -575,18 +578,31 @@
             }
         });
 
-        const introContainer = document.getElementById('intro-video-container');
-        const introVideo = document.getElementById('intro-video');
+        window.addEventListener('load', () => {
+            const introContainer = document.getElementById('intro-video-container');
+            const introVideo = document.getElementById('intro-video');
 
-        // Fjern intro når video er færdig
-        introVideo.addEventListener('ended', () => {
-            introContainer.style.display = 'none';
+            // Gør containeren synlig igen ved refresh
+            introContainer.style.display = 'flex';
+
+            // Sørg for video starter fra begyndelsen
+            introVideo.currentTime = 0;
+
+            // Start video manuelt
+            introVideo.play().catch((e) => {
+                console.warn("Autoplay fejl: ", e);
+            });
+
+            // Fjern intro når video er færdig
+            introVideo.addEventListener('ended', () => {
+                introContainer.style.display = 'none';
+            });
+
+            // Eller automatisk efter f.eks. 2.5 sekunder:
+            setTimeout(() => {
+                introContainer.style.display = 'none';
+            }, 2500);
         });
-
-        // Eller automatisk efter f.eks. 6 sekunder:
-        setTimeout(() => {
-            introContainer.style.display = 'none';
-        }, 2500);
     </script>
 </body>
 </html>
