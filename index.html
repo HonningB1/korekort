@@ -188,9 +188,34 @@
             display: none;
             z-index: 6;
         }
+        #intro-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* ovenpå alt andet */
+        }
+
+        #intro-video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+
     </style>
 </head>
 <body>
+    <div id="intro-video-container">
+        <video id="intro-video" autoplay muted playsinline>
+          <source src="intro.mp4" type="video/mp4">
+          Din browser understøtter ikke video tag.
+        </video>
+      </div>      
     <div id="click-area"></div>
     <div id="click-area-menu-back"></div>
     <div id="click-area-zoom"></div>
@@ -540,6 +565,19 @@
                 stopQRCode();
             }
         });
+
+        const introContainer = document.getElementById('intro-video-container');
+        const introVideo = document.getElementById('intro-video');
+
+        // Fjern intro når video er færdig
+        introVideo.addEventListener('ended', () => {
+            introContainer.style.display = 'none';
+        });
+
+        // Eller automatisk efter f.eks. 6 sekunder:
+        setTimeout(() => {
+            introContainer.style.display = 'none';
+        }, 1150);
     </script>
 </body>
 </html>
