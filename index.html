@@ -21,44 +21,31 @@
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-left: env(safe-area-inset-left, 0px);
         }
-    
+
         html, body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
             font-family: 'Lexend', sans-serif;
             background-color: #01152e;
-            overscroll-behavior: none;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        #app {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
             overflow: hidden;
         }
-    
-        @supports (height: 100dvh) {
-            body {
-                height: 100dvh;
-            }
-        }
-    
-        #app {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-top: var(--safe-top);
-            padding-right: var(--safe-right);
-            padding-bottom: var(--safe-bottom);
-            padding-left: var(--safe-left);
-            background-color: #01152e;
-        }
-    
+
         .image-container {
             position: relative;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
         }
-    
+
         .full-image {
             width: 100%;
             height: 100%;
@@ -68,17 +55,17 @@
             left: 0;
             z-index: 1;
         }
-    
+
         .date-time {
             position: absolute;
-            bottom: calc(10vh + var(--safe-bottom));
+            bottom: 10vh;
             left: 60%;
             transform: translateX(-50%);
             color: #282661;
             font-size: 12px;
             z-index: 10;
         }
-    
+
         /* Alle click areas */
         #click-area, #click-area-menu-back, #click-area-zoom, #click-area-kortinfo, #click-area-kørekort, #click-area-scan, #click-area-back, #click-area-kortinfo-menu, #click-area-menu-back-kortinfo, #click-area-kontrol, #click-area-kontrol-menu, #click-area-kontrol-menu-back {
             position: absolute;
@@ -86,50 +73,49 @@
             display: block;
             z-index: 5;
         }
-    
+
         #click-area {
             top: 2vh;
             right: 3vw;
             width: 7vw;
             height: 3vh;
         }
-    
+
         #click-area-menu-back {
             top: 0.7vh;
             left: 3.5vw;
             width: 6vw;
             height: 4vh;
         }
-    
+
         #click-area-zoom {
             top: 8vh;
             left: 51vw;
             width: 46vw;
             height: 28vh;
         }
-    
-        /* 👇 Vi bruger bottom + safe-area til disse */
+
         #click-area-kortinfo,
         #click-area-kørekort,
         #click-area-kontrol,
         #click-area-scan {
-            bottom: calc(1vh + var(--safe-bottom));
+            bottom: 1vh;
             width: 15vw;
             height: 8vh;
         }
-    
+
         #click-area-kortinfo { left: 30vw; }
         #click-area-kørekort { left: 5vw; }
         #click-area-kontrol { left: 80vw; }
         #click-area-scan { left: 55vw; }
-    
+
         #click-area-kortinfo-menu,
         #click-area-menu-back-kortinfo,
         #click-area-kontrol-menu,
         #click-area-kontrol-menu-back {
             display: none;
         }
-    
+
         #click-area-kortinfo-menu,
         #click-area-kontrol-menu {
             top: 2vh;
@@ -137,7 +123,7 @@
             width: 7vw;
             height: 3vh;
         }
-    
+
         #click-area-menu-back-kortinfo,
         #click-area-kontrol-menu-back {
             top: 0.7vh;
@@ -145,7 +131,7 @@
             width: 6vw;
             height: 4vh;
         }
-    
+
         #video-container {
             position: absolute;
             top: 0;
@@ -158,14 +144,14 @@
             align-items: center;
             z-index: 3;
         }
-    
+
         #video {
             width: 100vw;
             height: 100vh;
             object-fit: cover;
             z-index: 3;
         }
-    
+
         #overlay {
             position: absolute;
             top: 0;
@@ -176,7 +162,7 @@
             z-index: 4;
             pointer-events: none;
         }
-    
+
         #qrCanvas {
             position: absolute;
             top: 37%;
@@ -187,25 +173,21 @@
             display: none;
             z-index: 6;
         }
-    
+
         #intro-video-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100%;
+            height: 100vh;
             z-index: 9999;
             background: black;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            padding-top: var(--safe-top);
-            padding-right: var(--safe-right);
-            padding-bottom: var(--safe-bottom);
-            padding-left: var(--safe-left);
         }
-    
+
         #intro-video {
             position: absolute;
             top: 0;
@@ -213,17 +195,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .scale-wrapper {
-            transform: scale(0.98);
-            transform-origin: center center;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
         }
     </style>
 </head>
