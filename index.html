@@ -67,7 +67,7 @@
 
         .date-time {
             position: absolute;
-            bottom: 20vh;
+            bottom: 19.9vh;
             left: 60%;
             transform: translateX(-50%);
             color: #282661;
@@ -431,6 +431,7 @@
             clickAreaKørekort.style.display = "none";
             clickAreaKortinfo.style.display = "none";
             clickAreaScan.style.display = "none";
+            clickAreaKontrol.style.display ="none";
             date.style.display = "none";
             stopQRCode();
         });
@@ -463,6 +464,9 @@
             clickAreaKortinfo.style.display = "none";
             clickAreaKortinfoMenu.style.display = "none";
             clickAreaMenuBackKortinfo.style.display = "block";
+            clickAreaKørekort.style.display = "none";
+            clickAreaScan.style.display = "none";
+            clickAreaKontrol.style.display = "none";
             date.style.display = "none";
             stopQRCode();
         });
@@ -487,6 +491,9 @@
             clickAreaZoom.style.display = "none";
             clickAreaKørekort.style.display = "block";
             clickAreaKortinfo.style.display = "block";
+            clickAreaKortinfoMenu.style.display = "none";
+            clickArea.style.display = "none";
+            clickAreaKontrolMenu.style.display = "none";
             date.style.display = "none";
             stopQRCode();
 
